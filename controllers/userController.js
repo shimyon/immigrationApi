@@ -165,8 +165,8 @@ const loginUser = asyncHandler(async (req, res) => {
 //@desc Get User Data
 //@route POST api/users/me
 //@access Private
-const getMe = asyncHandler(async (req, res) => {
-    const { _id, name, email } = await User.findById(req.user.email)
+const getUserById = asyncHandler(async (req, res) => {
+    const { _id, name, email,role } = await User.findById(req.user.id)
 
     res.status(200).json({
         id: _id,
@@ -193,6 +193,23 @@ const getManager = asyncHandler(async (req, res) => {
     }
 })
 
+//@desc Get User Data
+//@route POST api/users/me
+//@access Private
+const getAllUser = asyncHandler(async (req, res) => {
+    try {
+        const user = await User.find({ is_active: true },{_id:1,email:1,name:1,role:1});
+
+        res.status(200).json(user).end();
+    } catch (err) {
+        return res.status(400).json({
+            success: false,
+            msg: "Error in getting USER. " + err.message,
+            data: null,
+        });
+    }
+})
+
 //Generate JWT
 const generateToken = (id) => {
     return jwt.sign({ id }, process.env.JWT_SECRET, {
@@ -203,8 +220,9 @@ const generateToken = (id) => {
 module.exports = {
     registerUser,
     loginUser,
-    getMe,
+    getUserById,
     updateUser,
     changePassword,
-    getManager
+    getManager,
+    getAllUser
 }
