@@ -9,7 +9,7 @@ const { resolveHostname } = require('nodemailer/lib/shared')
 //@route POST api/user
 //@access Public
 const registerUser = asyncHandler(async (req, res) => {
-    const { name, email, password, role } = req.body
+    const { name, email, password, role ,phoneNumber} = req.body
 
     if (!name || !email || !password || !role) {
         res.status(400)
@@ -32,6 +32,7 @@ const registerUser = asyncHandler(async (req, res) => {
         name,
         email,
         role,
+        phoneNumber,
         password: hashedPassword,
         is_active: true
 
@@ -43,6 +44,7 @@ const registerUser = asyncHandler(async (req, res) => {
             name: user.name,
             email: user.email,
             role: user.role,
+            phoneNumber:phoneNumber,
             token: generateToken(user.id),
         })
     }
@@ -53,7 +55,7 @@ const registerUser = asyncHandler(async (req, res) => {
 })
 
 const updateUser = asyncHandler(async (req, res) => {
-    const { name, id, role } = req.body
+    const { name, id, role,phoneNumber } = req.body
 
     if (!name || !role) {
         res.status(400)
@@ -73,7 +75,8 @@ const updateUser = asyncHandler(async (req, res) => {
 
     let user = await User.findByIdAndUpdate(id, {
         name: name,
-        role: role
+        role: role,
+        phoneNumber:phoneNumber 
     });
     user = await User.findOne({ _id: id });
     if (user) {
@@ -82,6 +85,7 @@ const updateUser = asyncHandler(async (req, res) => {
             name: user.name,
             email: user.email,
             role: user.role,
+            phoneNumber:phoneNumber,
             token: generateToken(user.id),
         })
     }
@@ -166,13 +170,14 @@ const loginUser = asyncHandler(async (req, res) => {
 //@route POST api/users/me
 //@access Private
 const getUserById = asyncHandler(async (req, res) => {
-    const { _id, name, email,role } = await User.findById(req.user.id)
+    const { _id, name, email,role,is_active,phoneNumber } = await User.findById(req.user.id)
 
     res.status(200).json({
         id: _id,
         name,
         email,
-        role
+        role,
+        is_active
     })
 })
 
@@ -198,7 +203,7 @@ const getManager = asyncHandler(async (req, res) => {
 //@access Private
 const getAllUser = asyncHandler(async (req, res) => {
     try {
-        const user = await User.find({ is_active: true },{_id:1,email:1,name:1,role:1});
+        const user = await User.find({ is_active: true },{_id:1,email:1,name:1,role:1,is_active:1,phoneNumber:1});
 
         res.status(200).json(user).end();
     } catch (err) {
