@@ -129,11 +129,10 @@ const editStudent = asyncHandler(async (req, res) => {
 const saveEditStudent = asyncHandler(async (req, res, imageName) => {
     try {
 
-        if(imageName!="")
-        {
-            req.body.imageName=imageName;
+        if (imageName != "") {
+            req.body.imageName = imageName;
         }
-        var savedStudent = await Student.findOneAndUpdate( req.body.id,{
+        var savedStudent = await Student.findOneAndUpdate(req.body.id, {
             visaType: req.body.visaType,
             name: req.body.studentName,
             address: req.body.address,
@@ -266,23 +265,21 @@ const editStatus = asyncHandler(async (req, res) => {
         }
 
         //create status
-        const status = await Status.findOne({_id:req.body.id});
+        const status = await Status.findOne({ _id: req.body.id });
 
         if (!status) {
             res.status(400)
             throw new Error("Status not found!")
         }
 
-        await Status.findOneAndUpdate(req.body.id,{
+        let updatecount = await Status.findByIdAndUpdate(req.body.id, {
             statusName: statusName,
             step: step
         });
         res.status(200).json({
             success: true,
             msg: "Status updated successfully",
-
         }).end();
-
     } catch (err) {
         return res.status(400).json({
             success: false,
@@ -294,7 +291,7 @@ const editStatus = asyncHandler(async (req, res) => {
 
 const getAllStatus = asyncHandler(async (req, res) => {
     try {
-        const status = await Status.find();
+        const status = await Status.find().sort('step');
 
         res.status(200).json(status).end();
     } catch (err) {
@@ -329,7 +326,7 @@ const changeStatus = asyncHandler(async (req, res) => {
         })
         return res.status(200).json({
             success: true,
-            msg: "Status changed successfully. " 
+            msg: "Status changed successfully. "
         });
     } catch (err) {
         return res.status(400).json({
@@ -340,4 +337,4 @@ const changeStatus = asyncHandler(async (req, res) => {
 
     }
 })
-module.exports = { addStudent, getStudentById, getStudents, assignedManager, createStatus, editStatus, getAllStatus, getStatusById,changeStatus,editStudent }
+module.exports = { addStudent, getStudentById, getStudents, assignedManager, createStatus, editStatus, getAllStatus, getStatusById, changeStatus, editStudent }

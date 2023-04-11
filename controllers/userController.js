@@ -9,7 +9,7 @@ const { resolveHostname } = require('nodemailer/lib/shared')
 //@route POST api/user
 //@access Public
 const registerUser = asyncHandler(async (req, res) => {
-    const { name, email, password, role ,phoneNumber} = req.body
+    const { name, email, password, role, phoneNumber, is_active } = req.body
 
     if (!name || !email || !password || !role) {
         res.status(400)
@@ -34,8 +34,7 @@ const registerUser = asyncHandler(async (req, res) => {
         role,
         phoneNumber,
         password: hashedPassword,
-        is_active: true
-
+        is_active: is_active
     })
 
     if (user) {
@@ -44,7 +43,8 @@ const registerUser = asyncHandler(async (req, res) => {
             name: user.name,
             email: user.email,
             role: user.role,
-            phoneNumber:phoneNumber,
+            phoneNumber: phoneNumber,
+            is_active: is_active,
             token: generateToken(user.id),
         })
     }
@@ -55,7 +55,7 @@ const registerUser = asyncHandler(async (req, res) => {
 })
 
 const updateUser = asyncHandler(async (req, res) => {
-    const { name, id, role,phoneNumber } = req.body
+    const { name, id, role, phoneNumber, email, is_active } = req.body
 
     if (!name || !role) {
         res.status(400)
@@ -76,7 +76,9 @@ const updateUser = asyncHandler(async (req, res) => {
     let user = await User.findByIdAndUpdate(id, {
         name: name,
         role: role,
-        phoneNumber:phoneNumber 
+        email: email,
+        phoneNumber: phoneNumber,
+        is_active: is_active
     });
     user = await User.findOne({ _id: id });
     if (user) {
@@ -85,7 +87,8 @@ const updateUser = asyncHandler(async (req, res) => {
             name: user.name,
             email: user.email,
             role: user.role,
-            phoneNumber:phoneNumber,
+            phoneNumber: phoneNumber,
+            is_active: is_active,
             token: generateToken(user.id),
         })
     }
@@ -170,14 +173,15 @@ const loginUser = asyncHandler(async (req, res) => {
 //@route POST api/users/me
 //@access Private
 const getUserById = asyncHandler(async (req, res) => {
-    const { _id, name, email,role,is_active,phoneNumber } = await User.findById(req.params.id)
+    const { _id, name, email, role, is_active, phoneNumber } = await User.findById(req.params.id)
 
     res.status(200).json({
         id: _id,
         name,
         email,
         role,
-        is_active
+        is_active,
+        phoneNumber
     })
 })
 
@@ -186,7 +190,7 @@ const getUserById = asyncHandler(async (req, res) => {
 //@access Private
 const getManager = asyncHandler(async (req, res) => {
     try {
-        const user = await User.findOne({ role: new RegExp("manager", 'i'), is_active: true },{_id:1,email:1,name:1,role:1});
+        const user = await User.findOne({ role: new RegExp("manager", 'i'), is_active: true }, { _id: 1, email: 1, name: 1, role: 1 });
 
         res.status(200).json(user).end();
     } catch (err) {
@@ -203,8 +207,7 @@ const getManager = asyncHandler(async (req, res) => {
 //@access Private
 const getAllUser = asyncHandler(async (req, res) => {
     try {
-        const user = await User.find({ is_active: true },{_id:1,email:1,name:1,role:1,is_active:1,phoneNumber:1});
-
+        const user = await User.find({}, { _id: 1, email: 1, name: 1, role: 1, is_active: 1, phoneNumber: 1 }).sort({ 'is_active': -1, name: 1 });
         res.status(200).json(user).end();
     } catch (err) {
         return res.status(400).json({
