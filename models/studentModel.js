@@ -76,6 +76,10 @@ const studentSchema = mongoose.Schema(
             type: mongoose.Schema.Types.ObjectId,
             ref: 'User'
         },
+        status: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'Status'
+        },
         updatedBy: {
             type: mongoose.Schema.Types.ObjectId,
             ref: 'User'
@@ -147,18 +151,30 @@ const languageSchema = mongoose.Schema(
         }
     })
 
+const statusSchema = mongoose.Schema(
+    {
+        statusName: {
+            type: String
+        },
+        step: {
+            type: Number
+        }
+    })
+
 const StudentModal = mongoose.model('Students', studentSchema)
 const EducationModal = mongoose.model('Educations', educationsSchema)
 const ExpeirenceModal = mongoose.model('Experience', experienceSchema)
 const LanguageModal = mongoose.model('Languages', languageSchema)
+const StautsModal = mongoose.model('Status', statusSchema)
 
 const syncIndex = async () => {
     await StudentModal.syncIndexes();
     await EducationModal.syncIndexes();
     await ExpeirenceModal.syncIndexes();
     await LanguageModal.syncIndexes();
+    await StautsModal.syncIndexes();
 };
 
 syncIndex();
 
-module.exports = { StudentModal, EducationModal, ExpeirenceModal, LanguageModal };
+module.exports = { StudentModal, EducationModal, ExpeirenceModal, LanguageModal, StautsModal };
