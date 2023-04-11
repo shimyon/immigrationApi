@@ -9,7 +9,6 @@ let fileName = "";
 let storage = multer.diskStorage({
     destination: (req, file, cb) => {
         cb(null, path.join(process.env.UPLOAD_FOLDER, "uploads"));
-        console.log(path.join(process.env.UPLOAD_FOLDER, "uploads"));
     },
     filename: (req, file, cb) => {
         const now = new Date();
@@ -17,17 +16,16 @@ let storage = multer.diskStorage({
         var ext = file.originalname.split(".")
         fileName = ext[0] + "_" + newDateValue + "." + ext[ext.length - 1];
         cb(null, fileName);
-        process.env.UPLOADFILE = process.env.UPLOADFILE + "," + fileName;
-        console.log(fileName);
     },
 });
 
 let uploadFile = multer({
     storage: storage,
     limits: { fileSize: maxSize },
-}).any();
+});
 
 // create the exported middleware object
-let uploadFileMiddleware = util.promisify(uploadFile);
+let uploadFileMiddleware = util.promisify(uploadFile.any());
 
 module.exports = uploadFileMiddleware;
+module.exports = { uploadFile };
