@@ -190,13 +190,29 @@ const getStudentById = asyncHandler(async (req, res) => {
 
 const getStudents = asyncHandler(async (req, res) => {
     try {
-        const student = await Student.find().populate("education").populate("workExperience").populate("language").populate("assignedManager").populate("status");
+        const student = await Student.find().populate("education").populate("workExperience").populate("language").populate("assignedManager",'_id name email phoneNumber').populate("status");
 
         res.status(200).json(student).end();
     } catch (err) {
         return res.status(400).json({
             success: false,
             msg: "Error in getting student. " + err.message,
+            data: null,
+        });
+
+    }
+})
+
+const updateStatus = asyncHandler(async (req, res) => {
+    try {
+        const student = await Student.findByIdAndUpdate(req.body.studentId, {
+            status: req.body.statusId,
+        });
+        res.status(200).json({ message: "Update Status successfully." }).end();
+    } catch (err) {
+        return res.status(400).json({
+            success: false,
+            msg: "Error in updating manager. " + err.message,
             data: null,
         });
 
@@ -337,4 +353,4 @@ const changeStatus = asyncHandler(async (req, res) => {
 
     }
 })
-module.exports = { addStudent, getStudentById, getStudents, assignedManager, createStatus, editStatus, getAllStatus, getStatusById, changeStatus, editStudent }
+module.exports = { addStudent, getStudentById, getStudents, assignedManager, createStatus, editStatus, getAllStatus, getStatusById, changeStatus, editStudent,updateStatus }

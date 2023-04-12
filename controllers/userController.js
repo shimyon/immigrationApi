@@ -190,7 +190,7 @@ const getUserById = asyncHandler(async (req, res) => {
 //@access Private
 const getManager = asyncHandler(async (req, res) => {
     try {
-        const user = await User.findOne({ role: new RegExp("manager", 'i'), is_active: true }, { _id: 1, email: 1, name: 1, role: 1 });
+        const user = await User.find({ role: new RegExp("manager", 'i'), is_active: true }, { _id: 1, email: 1, name: 1, role: 1, phoneNumber:1});
 
         res.status(200).json(user).end();
     } catch (err) {
