@@ -115,7 +115,9 @@ const changePassword = asyncHandler(async (req, res) => {
 
     let user = await User.findOne({ _id: id });
     if (user) {
-        if ((await bcrypt.compare(currentPassword, user.password))) {
+        const salt = await bcrypt.genSalt(10);
+        const hashedcurrentPassword = await bcrypt.hash(currentPassword, salt);
+        if ((await bcrypt.compare(hashedcurrentPassword, user.password))) {
             //Hash password
             const salt = await bcrypt.genSalt(10);
             const hashedPassword = await bcrypt.hash(newPassword, salt);

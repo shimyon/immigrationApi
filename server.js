@@ -22,6 +22,7 @@ app.options("*", cors());
 app.use('/static', express.static( "public/uploads"));
 app.use('/api/users', require('./routes/userRoutes'));
 app.use('/api/student', require('./routes/studentRoutes'));
+app.use('/api/lookup', require('./routes/lookupRoutes'));
 
 app.use(errorHandler)
 app.listen(port, () => console.log(`Listening at port ${port}`))
