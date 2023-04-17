@@ -5,7 +5,7 @@ const Lookup = LookupModal.LookupModal;
 const addLookup = asyncHandler(async (req, res) => {
     try {
         // const imageName = req.file?.filename;
-        var existLookupGroup = await LookupModal.findOne({ lookupGroupName: req.body.lookupGroupName });
+        var existLookupGroup = await LookupModal.findOne({ lookupGroupName: req.body.lookupGroupName, name: req.body.name });
         if (existLookupGroup) {
             return res.status(400).json({
                 success: false,
