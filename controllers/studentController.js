@@ -190,7 +190,7 @@ const getStudentById = asyncHandler(async (req, res) => {
 
 const getStudents = asyncHandler(async (req, res) => {
     try {
-        const student = await Student.find().populate("education").populate("workExperience").populate("language").populate("assignedManager",'_id name email phoneNumber').populate("status");
+        const student = await Student.find().populate("education").populate("workExperience").populate("language").populate("assignedManager", '_id name email phoneNumber').populate("status");
 
         res.status(200).json(student).end();
     } catch (err) {
@@ -344,6 +344,7 @@ const changeStatus = asyncHandler(async (req, res) => {
             success: true,
             msg: "Status changed successfully. "
         });
+
     } catch (err) {
         return res.status(400).json({
             success: false,
@@ -353,4 +354,148 @@ const changeStatus = asyncHandler(async (req, res) => {
 
     }
 })
-module.exports = { addStudent, getStudentById, getStudents, assignedManager, createStatus, editStatus, getAllStatus, getStatusById, changeStatus, editStudent,updateStatus }
+
+const editPirsonalInfo = asyncHandler(async (req, res) => {
+    try {
+        var savedStudent = await Student.findByIdAndUpdate(req.body.id, {
+            visaType: req.body.visaType,
+            name: req.body.studentname,
+            address: req.body.address,
+            gender: req.body.gender,
+            martialStatus: req.body.martialStatus,
+            mobileNumber: req.body.mobileNumber,
+            email: req.body.email,
+            nationality: req.body.nationality,
+            citizen: req.body.citizen,
+            // photo: req.body.imageName.replace(",", ""),
+            spouseName: req.body.spouseName,
+            spouseRelation: req.body.spouseRelation,
+            spouseCountry: req.body.spouseCountry,
+            spouseState: req.body.spouseState,
+            spouseCity: req.body.spouseCity,
+            spouseCountryStatus: req.body.spouseCountryStatus,
+            assignedManager: req.body.assignedManager,
+            // education: req.body.education,
+            // workExperience: req.body.workExperience,
+            // language: req.body.language,
+            status: req.body.status,
+        });
+        res.status(201).json({
+            message: "Student saved successfully."
+        }).end()
+
+    } catch (err) {
+        return res.status(400).json({
+            success: false,
+            msg: "Error in saving student. " + err.message,
+            data: null,
+        });
+
+    }
+
+})
+
+const editEducation = asyncHandler(async (req, res) => {
+    try {
+        var savedEducationStudent = await EducationModal.findByIdAndUpdate(req.body.id, {
+            institue: req.body.institue,
+            fromDate: req.body.fromDate,
+            toDate: req.body.toDate,
+            education: req.body.education,
+            marks: req.body.marks,
+            educationType: req.body.educationType,
+        });
+        res.status(201).json({
+            message: "Student saved successfully."
+        }).end()
+
+    } catch (err) {
+        return res.status(400).json({
+            success: false,
+            msg: "Error in saving student. " + err.message,
+            data: null,
+        });
+
+    }
+
+})
+const editlanguage = asyncHandler(async (req, res) => {
+    try {
+        var savedLanguageStudent = await LanguageModal.findByIdAndUpdate(req.body.id, {
+            languageName: req.body.languageName,
+            speak: req.body.speak,
+            write: req.body.write,
+            listening: req.body.listening,
+           
+        });
+        res.status(201).json({
+            message: "Student saved successfully."
+        }).end()
+
+    } catch (err) {
+        return res.status(400).json({
+            success: false,
+            msg: "Error in saving student. " + err.message,
+            data: null,
+        });
+
+    }
+
+})
+const addEducation = asyncHandler(async (req, res) => {
+    try {
+        const studentId = req.params.id;
+        const Educations = await EducationModal.create({
+            institue: req.body.institue,
+            fromDate: req.body.fromDate,
+            toDate: req.body.toDate,
+            education: req.body.education,
+            marks: req.body.marks,
+            educationType: req.body.educationType
+        })
+        if (Educations) {
+            var addEducation = await Student.findByIdAndUpdate(
+                studentId, { $push: { education: Educations._id } }
+            )
+        }
+        res.status(201).json({
+            message: "saved successfully."
+        }).end()
+
+    } catch (err) {
+        return res.status(400).json({
+            success: false,
+            msg: "Error in creating status. " + err.message,
+            data: null,
+        });
+    }
+})
+
+const addLanguage = asyncHandler(async (req, res) => {
+    try {
+        const studentId = req.params.id;
+        const language = await LanguageModal.create({
+            languageName: req.body.languageName,
+            speak: req.body.speak,
+            write: req.body.write,
+            listening: req.body.listening,
+           
+        })
+        if (language) {
+            var addEducation = await Student.findByIdAndUpdate(
+                studentId, { $push: { language: language._id } }
+            )
+        }
+        res.status(201).json({
+            message: "saved successfully."
+        }).end()
+
+    } catch (err) {
+        return res.status(400).json({
+            success: false,
+            msg: "Error in creating status. " + err.message,
+            data: null,
+        });
+    }
+})
+module.exports = { addStudent, getStudentById, getStudents, assignedManager, createStatus, editStatus, getAllStatus, getStatusById, changeStatus, editStudent, updateStatus, editPirsonalInfo, editEducation, addEducation,addLanguage ,editlanguage}

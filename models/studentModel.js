@@ -10,7 +10,7 @@ const studentSchema = mongoose.Schema(
         name: {
             type: String,
             required: [true, 'Please add name'],
-            unique: true,
+           
         },
         address: {
             type: String,
