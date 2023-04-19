@@ -498,4 +498,33 @@ const addLanguage = asyncHandler(async (req, res) => {
         });
     }
 })
-module.exports = { addStudent, getStudentById, getStudents, assignedManager, createStatus, editStatus, getAllStatus, getStatusById, changeStatus, editStudent, updateStatus, editPirsonalInfo, editEducation, addEducation,addLanguage ,editlanguage}
+
+const addWorkExperiance = asyncHandler(async (req, res) => {
+    try {
+        const studentId = req.params.id;
+        const workExperience = await ExpeirenceModal.create({
+            company: req.body.company,
+            fromDate: req.body.fromDate,
+            toDate: req.body.toDate,
+            designation: req.body.designation,
+            workType: req.body.workType,
+           
+        })
+        if (workExperience) {
+            var addEducation = await ExpeirenceModal.findByIdAndUpdate(
+                studentId, { $push: { workExperience: workExperience._id } }
+            )
+        }
+        res.status(201).json({
+            message: "saved successfully."
+        }).end()
+
+    } catch (err) {
+        return res.status(400).json({
+            success: false,
+            msg: "Error in creating status. " + err.message,
+            data: null,
+        });
+    }
+})
+module.exports = { addStudent, getStudentById, getStudents, assignedManager, createStatus, editStatus, getAllStatus, getStatusById, changeStatus, editStudent, updateStatus, editPirsonalInfo, editEducation, addEducation,addLanguage ,editlanguage,addWorkExperiance}
