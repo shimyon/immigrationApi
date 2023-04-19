@@ -38,7 +38,7 @@ const addLookup = asyncHandler(async (req, res) => {
 
 const getAllLookupData = asyncHandler(async (req, res) => {
     try {
-        const Lookup = await LookupModal.find({}, { _id: 1, lookupGroupName: 1, name: 1}).sort({ name: 1 });
+        const Lookup = await LookupModal.find({}, { _id: 1, lookupGroupName: 1, name: 1 }).sort({ name: 1 });
         res.status(200).json(Lookup).end();
     } catch (err) {
         return res.status(400).json({
@@ -98,4 +98,28 @@ const getLookupById = asyncHandler(async (req, res) => {
 
     }
 })
-module.exports = { addLookup,getAllLookupData,editLookup,getLookupById}
+
+const getLookupByGroup = asyncHandler(async (req, res) => {
+    try {
+        const Lookup = await LookupModal.aggregate([
+            {    
+                '$group': {
+                    '_id': '$lookupGroupName',
+                    'GroupName': {
+                        '$push': '$$ROOT'
+                    }
+                }
+            }
+        ]);
+
+        res.status(200).json(Lookup).end();
+    } catch (err) {
+        return res.status(400).json({
+            success: false,
+            msg: "Error in getting LookupData. " + err.message,
+            data: null,
+        });
+
+    }
+})
+module.exports = { addLookup, getAllLookupData, editLookup, getLookupById, getLookupByGroup }
