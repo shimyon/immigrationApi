@@ -5,7 +5,7 @@ const router = express.Router();
 const { uploadFile } = require('../middleware/uploadFileMiddleware');
 
 
-const { addStudent, getStudentById, getStudents, assignedManager, createStatus, editStatus, getAllStatus, getStatusById, changeStatus, editStudent,updateStatus,editPirsonalInfo,editEducation,addEducation,addLanguage ,editlanguage,addWorkExperiance} = require('../controllers/studentController')
+const { addStudent, getStudentById, getStudents, assignedManager, createStatus, editStatus, getAllStatus, getStatusById, changeStatus, editStudent,updateStatus,editPirsonalInfo,editEducation,addEducation,addLanguage ,editlanguage,addWorkExperiance,editWorkExperiance,deleteWorkExperiance,deleteLanguage,deleteEducation} = require('../controllers/studentController')
 const { protect } = require('../middleware/authMiddleware')
 
 
@@ -26,5 +26,9 @@ router.post('/editlanguage', protect, editlanguage)
 router.post('/addEducation/:id', protect, addEducation)
 router.post('/addLanguage/:id', protect, addLanguage)
 router.post('/addWorkExperiance/:id', protect, addWorkExperiance)
+router.post('/editWorkExperiance', protect, editWorkExperiance)
+router.post('/deleteWorkExperiance', protect, deleteWorkExperiance)
+router.post('/deleteLanguage', protect, deleteLanguage)
+router.post('/deleteEducation', protect, deleteEducation)
 
 module.exports = router

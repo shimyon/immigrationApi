@@ -381,7 +381,7 @@ const editPirsonalInfo = asyncHandler(async (req, res) => {
             status: req.body.status,
         });
         res.status(201).json({
-            message: "Student saved successfully."
+            message: "saved successfully."
         }).end()
 
     } catch (err) {
@@ -406,7 +406,7 @@ const editEducation = asyncHandler(async (req, res) => {
             educationType: req.body.educationType,
         });
         res.status(201).json({
-            message: "Student saved successfully."
+            message: "saved successfully."
         }).end()
 
     } catch (err) {
@@ -426,10 +426,10 @@ const editlanguage = asyncHandler(async (req, res) => {
             speak: req.body.speak,
             write: req.body.write,
             listening: req.body.listening,
-           
+
         });
         res.status(201).json({
-            message: "Student saved successfully."
+            message: "saved successfully."
         }).end()
 
     } catch (err) {
@@ -479,7 +479,7 @@ const addLanguage = asyncHandler(async (req, res) => {
             speak: req.body.speak,
             write: req.body.write,
             listening: req.body.listening,
-           
+
         })
         if (language) {
             var addEducation = await Student.findByIdAndUpdate(
@@ -508,10 +508,10 @@ const addWorkExperiance = asyncHandler(async (req, res) => {
             toDate: req.body.toDate,
             designation: req.body.designation,
             workType: req.body.workType,
-           
+
         })
         if (workExperience) {
-            var addEducation = await ExpeirenceModal.findByIdAndUpdate(
+            var addEducation = await Student.findByIdAndUpdate(
                 studentId, { $push: { workExperience: workExperience._id } }
             )
         }
@@ -527,4 +527,97 @@ const addWorkExperiance = asyncHandler(async (req, res) => {
         });
     }
 })
-module.exports = { addStudent, getStudentById, getStudents, assignedManager, createStatus, editStatus, getAllStatus, getStatusById, changeStatus, editStudent, updateStatus, editPirsonalInfo, editEducation, addEducation,addLanguage ,editlanguage,addWorkExperiance}
+
+const editWorkExperiance = asyncHandler(async (req, res) => {
+    try {
+        var savedWorkExperianceStudent = await ExpeirenceModal.findByIdAndUpdate(req.body.id, {
+            company: req.body.company,
+            fromDate: req.body.fromDate,
+            toDate: req.body.toDate,
+            designation: req.body.designation,
+            workType: req.body.workType,
+        });
+        res.status(201).json({
+            message: "saved successfully."
+        }).end()
+
+    } catch (err) {
+        return res.status(400).json({
+            success: false,
+            msg: "Error in saving student. " + err.message,
+            data: null,
+        });
+
+    }
+
+})
+
+const deleteWorkExperiance = asyncHandler(async (req, res) => {
+    try {
+        const studentId = req.body.studentId;
+            var deleteExpstud = await Student.findByIdAndUpdate(
+                studentId,  { $pull: { workExperience: req.body.workExperianceId } }
+            )
+        
+        var deleteexp =await ExpeirenceModal.findByIdAndDelete(req.body.workExperianceId)
+        res.status(201).json({
+            message: "delete successfully."
+        }).end()
+
+    } catch (err) {
+        return res.status(400).json({
+            success: false,
+            msg: "Error in saving student. " + err.message,
+            data: null,
+        });
+
+    }
+
+})
+
+const deleteLanguage = asyncHandler(async (req, res) => {
+    try {
+        const studentId = req.body.studentId;
+            var deletestulang = await Student.findByIdAndUpdate(
+                studentId,  { $pull: { language: req.body.languageId } }
+            )
+        
+        var deletelang =await LanguageModal.findByIdAndDelete(req.body.languageId)
+        res.status(201).json({
+            message: "delete successfully."
+        }).end()
+
+    } catch (err) {
+        return res.status(400).json({
+            success: false,
+            msg: "Error in saving student. " + err.message,
+            data: null,
+        });
+
+    }
+
+})
+
+const deleteEducation = asyncHandler(async (req, res) => {
+    try {
+        const studentId = req.body.studentId;
+            var deleteeducationstd = await Student.findByIdAndUpdate(
+                studentId,  { $pull: { education: req.body.educationId } }
+            )
+        
+        var deleteeducation =await EducationModal.findByIdAndDelete(req.body.educationId)
+        res.status(201).json({
+            message: "delete successfully."
+        }).end()
+
+    } catch (err) {
+        return res.status(400).json({
+            success: false,
+            msg: "Error in saving student. " + err.message,
+            data: null,
+        });
+
+    }
+
+})
+module.exports = { addStudent, getStudentById, getStudents, assignedManager, createStatus, editStatus, getAllStatus, getStatusById, changeStatus, editStudent, updateStatus, editPirsonalInfo, editEducation, addEducation, addLanguage, editlanguage, addWorkExperiance, editWorkExperiance ,deleteWorkExperiance,deleteLanguage,deleteEducation}
