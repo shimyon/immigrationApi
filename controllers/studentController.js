@@ -175,7 +175,7 @@ const saveEditStudent = asyncHandler(async (req, res, imageName) => {
 
 const getStudentById = asyncHandler(async (req, res) => {
     try {
-        const student = await Student.findById(req.params.id).populate("education").populate("workExperience").populate("language").populate("assignedManager").populate("status")
+        const student = await Student.findById(req.params.id).populate("education").populate("workExperience").populate("language").populate("assignedManager").populate("status").lean();
 
         res.status(200).json(student).end();
     } catch (err) {
@@ -426,7 +426,7 @@ const editlanguage = asyncHandler(async (req, res) => {
             speak: req.body.speak,
             write: req.body.write,
             listening: req.body.listening,
-
+            read: req.body.read,
         });
         res.status(201).json({
             message: "saved successfully."
@@ -479,7 +479,7 @@ const addLanguage = asyncHandler(async (req, res) => {
             speak: req.body.speak,
             write: req.body.write,
             listening: req.body.listening,
-
+            read: req.body.read
         })
         if (language) {
             var addEducation = await Student.findByIdAndUpdate(
