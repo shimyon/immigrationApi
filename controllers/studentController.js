@@ -555,11 +555,11 @@ const editWorkExperiance = asyncHandler(async (req, res) => {
 const deleteWorkExperiance = asyncHandler(async (req, res) => {
     try {
         const studentId = req.body.studentId;
-            var deleteExpstud = await Student.findByIdAndUpdate(
-                studentId,  { $pull: { workExperience: req.body.workExperianceId } }
-            )
-        
-        var deleteexp =await ExpeirenceModal.findByIdAndDelete(req.body.workExperianceId)
+        var deleteExpstud = await Student.findByIdAndUpdate(
+            studentId, { $pull: { workExperience: req.body.workExperianceId } }
+        )
+
+        var deleteexp = await ExpeirenceModal.findByIdAndDelete(req.body.workExperianceId)
         res.status(201).json({
             message: "delete successfully."
         }).end()
@@ -578,11 +578,11 @@ const deleteWorkExperiance = asyncHandler(async (req, res) => {
 const deleteLanguage = asyncHandler(async (req, res) => {
     try {
         const studentId = req.body.studentId;
-            var deletestulang = await Student.findByIdAndUpdate(
-                studentId,  { $pull: { language: req.body.languageId } }
-            )
-        
-        var deletelang =await LanguageModal.findByIdAndDelete(req.body.languageId)
+        var deletestulang = await Student.findByIdAndUpdate(
+            studentId, { $pull: { language: req.body.languageId } }
+        )
+
+        var deletelang = await LanguageModal.findByIdAndDelete(req.body.languageId)
         res.status(201).json({
             message: "delete successfully."
         }).end()
@@ -601,11 +601,11 @@ const deleteLanguage = asyncHandler(async (req, res) => {
 const deleteEducation = asyncHandler(async (req, res) => {
     try {
         const studentId = req.body.studentId;
-            var deleteeducationstd = await Student.findByIdAndUpdate(
-                studentId,  { $pull: { education: req.body.educationId } }
-            )
-        
-        var deleteeducation =await EducationModal.findByIdAndDelete(req.body.educationId)
+        var deleteeducationstd = await Student.findByIdAndUpdate(
+            studentId, { $pull: { education: req.body.educationId } }
+        )
+
+        var deleteeducation = await EducationModal.findByIdAndDelete(req.body.educationId)
         res.status(201).json({
             message: "delete successfully."
         }).end()
@@ -620,4 +620,33 @@ const deleteEducation = asyncHandler(async (req, res) => {
     }
 
 })
-module.exports = { addStudent, getStudentById, getStudents, assignedManager, createStatus, editStatus, getAllStatus, getStatusById, changeStatus, editStudent, updateStatus, editPirsonalInfo, editEducation, addEducation, addLanguage, editlanguage, addWorkExperiance, editWorkExperiance ,deleteWorkExperiance,deleteLanguage,deleteEducation}
+
+const getallEducation = asyncHandler(async (req, res) => {
+    // try {
+        
+    //     const Eductionlist = await Student.findById(req.params.id)
+    //     if (req.body.education) {
+    //         if (Array.isArray(req.body.education)) {
+    //             for (const key in req.body.education) {
+    //                 const element = req.body.education[key];
+    //                 let ejson = JSON.parse(element);
+    //                 let addnew = await EducationModal.create(ejson);
+    //                 education.push(addnew._id)
+    //             }
+    //         } else {
+    //             let ejson = JSON.parse(req.body.education);
+    //             let educationAdd = await EducationModal.create(ejson);
+    //             education.push(educationAdd._id);
+    //         }
+    //     }
+    //     res.status(200).json({Eductionlist})
+    // } catch (err) {
+    //     return res.status(400).json({
+    //         success: false,
+    //         msg: "Error in saving student. " + err.message,
+    //         data: null,
+    //     });
+
+    // }
+})
+module.exports = { addStudent, getStudentById, getStudents, assignedManager, createStatus, editStatus, getAllStatus, getStatusById, changeStatus, editStudent, updateStatus, editPirsonalInfo, editEducation, addEducation, addLanguage, editlanguage, addWorkExperiance, editWorkExperiance, deleteWorkExperiance, deleteLanguage, deleteEducation, getallEducation }
