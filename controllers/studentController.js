@@ -331,7 +331,6 @@ const getStatusById = asyncHandler(async (req, res) => {
             msg: "Error in getting status. " + err.message,
             data: null,
         });
-
     }
 })
 
@@ -351,7 +350,6 @@ const changeStatus = asyncHandler(async (req, res) => {
             msg: "Error in changing status. " + err.message,
             data: null,
         });
-
     }
 })
 
@@ -392,8 +390,52 @@ const editPirsonalInfo = asyncHandler(async (req, res) => {
         });
 
     }
-
 })
+
+const getStudentEducation = asyncHandler(async (req, res) => {
+    try {
+        var studentEducation = await Student.findById(req.params.studentid).populate("education").select("education");
+        res.status(200).json(studentEducation).end();
+    } catch (err) {
+        return res.status(400).json({
+            success: false,
+            msg: "Error in saving student. " + err.message,
+            data: null,
+        });
+
+    }
+})
+
+
+const getStudentworkExperience = asyncHandler(async (req, res) => {
+    try {
+        var studentEducation = await Student.findById(req.params.studentid).populate("workExperience").select("workExperience");
+        res.status(200).json(studentEducation).end();
+    } catch (err) {
+        return res.status(400).json({
+            success: false,
+            msg: "Error in saving student. " + err.message,
+            data: null,
+        });
+
+    }
+})
+
+
+const getStudentlanguages = asyncHandler(async (req, res) => {
+    try {
+        var studentEducation = await Student.findById(req.params.studentid).populate("language").select("language");
+        res.status(200).json(studentEducation).end();
+    } catch (err) {
+        return res.status(400).json({
+            success: false,
+            msg: "Error in saving student. " + err.message,
+            data: null,
+        });
+
+    }
+})
+
 
 const editEducation = asyncHandler(async (req, res) => {
     try {
@@ -417,8 +459,9 @@ const editEducation = asyncHandler(async (req, res) => {
         });
 
     }
-
 })
+
+
 const editlanguage = asyncHandler(async (req, res) => {
     try {
         var savedLanguageStudent = await LanguageModal.findByIdAndUpdate(req.body.id, {
@@ -623,7 +666,7 @@ const deleteEducation = asyncHandler(async (req, res) => {
 
 const getallEducation = asyncHandler(async (req, res) => {
     // try {
-        
+
     //     const Eductionlist = await Student.findById(req.params.id)
     //     if (req.body.education) {
     //         if (Array.isArray(req.body.education)) {
@@ -649,4 +692,8 @@ const getallEducation = asyncHandler(async (req, res) => {
 
     // }
 })
-module.exports = { addStudent, getStudentById, getStudents, assignedManager, createStatus, editStatus, getAllStatus, getStatusById, changeStatus, editStudent, updateStatus, editPirsonalInfo, editEducation, addEducation, addLanguage, editlanguage, addWorkExperiance, editWorkExperiance, deleteWorkExperiance, deleteLanguage, deleteEducation, getallEducation }
+module.exports = {
+    addStudent, getStudentById, getStudents, assignedManager, createStatus, editStatus, getAllStatus, getStatusById, changeStatus, editStudent, updateStatus, editPirsonalInfo, editEducation, addEducation, addLanguage, editlanguage, addWorkExperiance, editWorkExperiance, deleteWorkExperiance, deleteLanguage, deleteEducation,
+    getallEducation, getStudentEducation, getStudentworkExperience,
+    getStudentlanguages
+}

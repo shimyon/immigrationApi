@@ -5,7 +5,7 @@ const router = express.Router();
 const { uploadFile } = require('../middleware/uploadFileMiddleware');
 
 
-const { addStudent, getStudentById, getStudents, assignedManager, createStatus, editStatus, getAllStatus, getStatusById, changeStatus, editStudent,updateStatus,editPirsonalInfo,editEducation,addEducation,addLanguage ,editlanguage,addWorkExperiance,editWorkExperiance,deleteWorkExperiance,deleteLanguage,deleteEducation,getallEducation} = require('../controllers/studentController')
+const { addStudent, getStudentById, getStudents, assignedManager, createStatus, editStatus, getAllStatus, getStatusById, changeStatus, editStudent,updateStatus,editPirsonalInfo,editEducation,addEducation,addLanguage ,editlanguage,addWorkExperiance,editWorkExperiance,deleteWorkExperiance,deleteLanguage,deleteEducation,getallEducation, getStudentEducation, getStudentworkExperience, getStudentlanguages} = require('../controllers/studentController')
 const { protect } = require('../middleware/authMiddleware')
 
 
@@ -31,5 +31,8 @@ router.post('/editWorkExperiance', protect, editWorkExperiance)
 router.post('/deleteWorkExperiance', protect, deleteWorkExperiance)
 router.post('/deleteLanguage', protect, deleteLanguage)
 router.post('/deleteEducation', protect, deleteEducation)
+router.get('/getStudentEducation/:studentid', protect, getStudentEducation)
+router.get('/getStudentworkExperience/:studentid', protect, getStudentworkExperience)
+router.get('/getStudentlanguages/:studentid', protect, getStudentlanguages)
 
 module.exports = router
