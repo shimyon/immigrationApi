@@ -13,6 +13,7 @@ const followUpSchema = mongoose.Schema(
         },
         studentId: {
             type: mongoose.Schema.Types.ObjectId,
+            ref: 'student'
         },
         date: {
             type: Date,
