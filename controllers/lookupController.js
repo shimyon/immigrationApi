@@ -133,8 +133,12 @@ const getLookupByGroup = asyncHandler(async (req, res) => {
                 },
             }
         ]);
-
-        res.status(200).json(Lookup).end();
+        let result = {};
+        Lookup.forEach((val, i) => {
+            let key = Object.keys(val)[0];
+            result[key] = val[key];
+        });
+        res.status(200).json(result).end();
     } catch (err) {
         return res.status(400).json({
             success: false,
