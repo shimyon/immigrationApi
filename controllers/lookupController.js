@@ -102,17 +102,43 @@ const getLookupById = asyncHandler(async (req, res) => {
 const getLookupByGroup = asyncHandler(async (req, res) => {
     try {
         const Lookup = await LookupModal.aggregate([
-            {    
-                '$group': {
-                    '_id': '$lookupGroupName',
-                    'GroupName': {
-                        '$push': '$$ROOT'
-                    }
-                }
+            {
+                $group: {
+                    _id: "$lookupGroupName",
+                    obj: {
+                        $push: "$$ROOT",
+                    },
+                },
+            },
+            {
+                $replaceRoot:
+                {
+                    newRoot: {
+                        $let: {
+                            vars: {
+                                obj: [
+                                    {
+                                        k: {
+                                            $substr: ["$_id", 0, -1],
+                                        },
+                                        v: "$obj",
+                                    },
+                                ],
+                            },
+                            in: {
+                                $arrayToObject: "$$obj",
+                            },
+                        },
+                    },
+                },
             }
         ]);
-
-        res.status(200).json(Lookup).end();
+        let result = {};
+        Lookup.forEach((val, i) => {
+            let key = Object.keys(val)[0];
+            result[key] = val[key];
+        });
+        res.status(200).json(result).end();
     } catch (err) {
         return res.status(400).json({
             success: false,
