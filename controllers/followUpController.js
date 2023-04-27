@@ -5,12 +5,12 @@ const followUp = followUpModel.followUpModel;
 
 const addFollowUp = asyncHandler(async (req, res) => {
     try {
-        const savedfollowup= await followUpModel.create({
+        const savedfollowup = await followUpModel.create({
             name: req.body.name,
             date: req.body.date,
-            mobileNo:req.body.mobileNo,
-            studentId:req.body.studentId,
-            remark:req.body.remark
+            mobileNo: req.body.mobileNo,
+            studentId: req.body.studentId,
+            remark: req.body.remark
         });
         if (savedfollowup) {
             res.status(201).json({
@@ -36,9 +36,9 @@ const editFollowUp = asyncHandler(async (req, res) => {
         let updatecount = await followUpModel.findByIdAndUpdate(req.body.id, {
             name: req.body.name,
             date: req.body.date,
-            mobileNo:req.body.mobileNo,
-            studentId:req.body.studentId,
-            remark:req.body.remark
+            mobileNo: req.body.mobileNo,
+            studentId: req.body.studentId,
+            remark: req.body.remark
         });
         res.status(200).json({
             success: true,
@@ -75,4 +75,35 @@ const deleteFollowUp = asyncHandler(async (req, res) => {
     }
 
 })
-module.exports = { addFollowUp,editFollowUp,deleteFollowUp}
+
+const getFollowupList = async (req, res) => {
+    try {
+        let followUp = await followUpModel.find({});
+        res.status(200).json({
+            success: true,
+            message: "",
+            data: followUp
+        }).end();
+    } catch (error) {
+        return res.status(400).json({
+            success: false,
+            msg: "Error in getting followup list. " + err.message,
+            data: null,
+        });
+    }
+}
+
+const getFollowupById = async (req, res) => {
+    try {
+        let followUp = await followUpModel.findById(req.params.id);
+        res.status(200).json(followUp).end();
+    } catch (error) {
+        return res.status(400).json({
+            success: false,
+            msg: "Error in getting followup list. " + err.message,
+            data: null,
+        });
+    }
+}
+
+module.exports = { addFollowUp, editFollowUp, deleteFollowUp, getFollowupList, getFollowupById }
