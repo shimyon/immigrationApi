@@ -517,6 +517,14 @@ const addEducation = asyncHandler(async (req, res) => {
 const addLanguage = asyncHandler(async (req, res) => {
     try {
         const studentId = req.params.id;
+        var existLanguage = await LanguageModal.findOne({ languageName: req.body.languageName });
+        // var existstdLanguage = await Student.findOne({ languageName: req.body.languageName });
+        if (existLanguage) {
+            return res.status(400).json({
+                success: false,
+                msg: 'Language already exist'
+            });
+        }
         const language = await LanguageModal.create({
             languageName: req.body.languageName,
             speak: req.body.speak,
@@ -690,10 +698,58 @@ const getallEducation = asyncHandler(async (req, res) => {
     //         data: null,
     //     });
 
-    // }
+})
+const MobileVerify = asyncHandler(async (req, res) => {
+    try {
+        var existNumber = await Student.findOne({ mobileNumber: req.body.mobileNumber });
+        if (existNumber) {
+            return res.status(400).json({
+                success: false,
+                msg: 'Mobile number already exist'
+            });
+        }
+        else{
+            return res.status(400).json({
+                success: true,
+                
+            });
+        }
+    } catch (err) {
+        return res.status(400).json({
+            success: false,
+            msg: "Error in getting . " + err.message,
+            data: null,
+        });
+
+    }
+})
+
+const EmailVerify = asyncHandler(async (req, res) => {
+    try {
+        var existEmail = await Student.findOne({ email: req.body.email });
+        if (existEmail) {
+            return res.status(400).json({
+                success: false,
+                msg: 'Email already exist'
+            });
+        }
+        else{
+            return res.status(400).json({
+                success: true,
+                
+            });
+        }
+    } catch (err) {
+        return res.status(400).json({
+            success: false,
+            msg: "Error in getting . " + err.message,
+            data: null,
+        });
+
+    }
 })
 module.exports = {
     addStudent, getStudentById, getStudents, assignedManager, createStatus, editStatus, getAllStatus, getStatusById, changeStatus, editStudent, updateStatus, editPirsonalInfo, editEducation, addEducation, addLanguage, editlanguage, addWorkExperiance, editWorkExperiance, deleteWorkExperiance, deleteLanguage, deleteEducation,
     getallEducation, getStudentEducation, getStudentworkExperience,
-    getStudentlanguages
+    getStudentlanguages,MobileVerify,EmailVerify
 }
