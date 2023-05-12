@@ -190,7 +190,7 @@ const getUserById = asyncHandler(async (req, res) => {
 //@access Private
 const getManager = asyncHandler(async (req, res) => {
     try {
-        const user = await User.find({ role: new RegExp("manager", 'i'), is_active: true }, { _id: 1, email: 1, name: 1, role: 1, phoneNumber:1});
+        const user = await User.find({ role: new RegExp("manager", 'i'), is_active: true }, { _id: 1, email: 1, name: 1, role: 1, phoneNumber: 1 });
 
         res.status(200).json(user).end();
     } catch (err) {
@@ -207,7 +207,11 @@ const getManager = asyncHandler(async (req, res) => {
 //@access Private
 const getAllUser = asyncHandler(async (req, res) => {
     try {
-        const user = await User.find({}, { _id: 1, email: 1, name: 1, role: 1, is_active: 1, phoneNumber: 1 }).sort({ 'is_active': -1, name: 1 });
+        var fillter = {};
+        if (req.body.role) {
+            fillter.role = req.body.role;
+        }
+        const user = await User.find(fillter, { _id: 1, email: 1, name: 1, role: 1, is_active: 1, phoneNumber: 1 }).sort({ 'is_active': -1, name: 1 });
         res.status(200).json(user).end();
     } catch (err) {
         return res.status(400).json({
