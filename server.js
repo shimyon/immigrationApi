@@ -24,6 +24,7 @@ app.use('/api/users', require('./routes/userRoutes'));
 app.use('/api/student', require('./routes/studentRoutes'));
 app.use('/api/lookup', require('./routes/lookupRoutes'));
 app.use('/api/followUp', require('./routes/followUpRoute'));
+app.use('/api/dashboard', require('./routes/dashboardRoute'));
 app.use('/api/notification', require('./routes/notificationRoute'));
 
 app.use(errorHandler)
