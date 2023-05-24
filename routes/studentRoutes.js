@@ -34,7 +34,7 @@ router.post('/deleteEducation', protect, deleteEducation)
 router.get('/getStudentEducation/:studentid', protect, getStudentEducation)
 router.get('/getStudentworkExperience/:studentid', protect, getStudentworkExperience)
 router.get('/getStudentlanguages/:studentid', protect, getStudentlanguages)
-router.post('/MobileVerify', protect, MobileVerify)
-router.post('/EmailVerify', protect, EmailVerify)
+router.post('/MobileVerify', MobileVerify)
+router.post('/EmailVerify', EmailVerify)
 
 module.exports = router
