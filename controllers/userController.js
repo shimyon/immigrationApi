@@ -141,6 +141,44 @@ const changePassword = asyncHandler(async (req, res) => {
     }
 })
 
+const forgotPassword = asyncHandler(async (req, res) => {
+    const { id, newPassword } = req.body
+
+    if (!id || !newPassword) {
+        res.status(400)
+        throw new Error('id or new password field not found!')
+    }
+
+    //check if user exist
+    const userExists = await User.findOne({ _id: id });
+    if (!userExists) {
+        res.status(400)
+        throw new Error('User Not Found')
+    }
+
+    let user = await User.findOne({ _id: id });
+    if (user) {
+        //Hash password
+        const salt = await bcrypt.genSalt(10);
+        const hashedPassword = await bcrypt.hash(newPassword, salt);
+        await User.findByIdAndUpdate(id, {
+            password: hashedPassword
+        });
+        res.status(201).json({
+            _id: user.id,
+            name: user.name,
+            email: user.email,
+            role: user.role,
+            token: generateToken(user.id),
+        })
+    }
+    else {
+        res.status(400)
+        throw new Error("Invalid user data!")
+    }
+})
+
+
 //@desc Authenticate a User
 //@route POST api/users/login
 //@access Public
@@ -235,6 +273,7 @@ module.exports = {
     getUserById,
     updateUser,
     changePassword,
+    forgotPassword,
     getManager,
     getAllUser
 }
