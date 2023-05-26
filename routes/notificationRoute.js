@@ -7,9 +7,9 @@ router.post('/save', addNotification);
 router.post('/edit', protect, editNotification)
 router.post('/delete', protect, deleteNotification)
 router.get('/getAllNotification', protect, getAllNotification)
-router.get('/getAllNotificationByUId', protect, getAllNotificationByUId)
-router.get('/markasread', protect, setmarkasread)
-router.get('/getMostRecentById', protect, getMostRecentById)
+router.post('/getAllNotificationByUId', protect, getAllNotificationByUId)
+router.post('/markasread', protect, setmarkasread)
+router.post('/getMostRecentById', protect, getMostRecentById)
 
 
 module.exports = router

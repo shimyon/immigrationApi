@@ -1,3 +1,4 @@
+const {ObjectId} = require('mongodb');
 const asyncHandler = require('express-async-handler')
 const notificationModel = require('../models/notificationModel')
 const addNotification = asyncHandler(async (req, res) => {
@@ -32,8 +33,8 @@ const editNotification = asyncHandler(async (req, res) => {
         let updatecount = await notificationModel.findByIdAndUpdate(req.body.Id, {
             description: req.body.description,
             date: req.body.date,
-            userId:req.body.userId,
-            Isread:req.body.Isread
+            userId: req.body.userId,
+            Isread: req.body.Isread
         });
         res.status(200).json({
             success: true,
@@ -89,9 +90,13 @@ const getAllNotificationByUId = asyncHandler(async (req, res) => {
     try {
         // const userExists = await User.findOne({ _id: id });
 
-        const notification = await notificationModel.find({userId:req.body.userId});
+        const notification = await notificationModel.find({ userId: req.body.userId });
 
-        res.status(200).json(notification).end();
+        res.status(200).json({
+            success: true,
+            msg: "",
+            data: notification,
+        }).end();
     } catch (err) {
         return res.status(400).json({
             success: false,
@@ -104,11 +109,14 @@ const getAllNotificationByUId = asyncHandler(async (req, res) => {
 
 const setmarkasread = asyncHandler(async (req, res) => {
     try {
-        // const userExists = await User.findOne({ _id: id });
+        const { id } = req.body;
+        const notification = await notificationModel.findByIdAndUpdate(id, { Isread: true });
 
-        const notification = await notificationModel.find({Isread:'true'});
-
-        res.status(200).json(notification).end();
+        res.status(200).json({
+            success: notification != null,
+            msg: "",
+            data: notification,
+        }).end();
     } catch (err) {
         return res.status(400).json({
             success: false,
@@ -121,11 +129,14 @@ const setmarkasread = asyncHandler(async (req, res) => {
 
 const getMostRecentById = asyncHandler(async (req, res) => {
     try {
-        // const userExists = await User.findOne({ _id: id });
+        const { userId } = req.body;
+        const notification = await notificationModel.find({ userId }).limit(3).sort('createdAt desc');
 
-        const notification = await notificationModel.find().sort('createdAt desc');
-
-        res.status(200).json(notification).end();
+        res.status(200).json({
+            success: true,
+            msg: "",
+            data: notification,
+        }).end();
     } catch (err) {
         return res.status(400).json({
             success: false,
@@ -135,7 +146,7 @@ const getMostRecentById = asyncHandler(async (req, res) => {
 
     }
 })
-module.exports = { addNotification, editNotification ,deleteNotification,getAllNotification,getAllNotificationByUId,setmarkasread,getMostRecentById}
+module.exports = { addNotification, editNotification, deleteNotification, getAllNotification, getAllNotificationByUId, setmarkasread, getMostRecentById }
 
 
 
