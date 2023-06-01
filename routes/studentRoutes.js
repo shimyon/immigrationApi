@@ -5,7 +5,7 @@ const router = express.Router();
 const { uploadFile } = require('../middleware/uploadFileMiddleware');
 
 
-const { addStudent, getStudentById, getStudents, assignedManager, createStatus, editStatus, getAllStatus, getStatusById, changeStatus, editStudent,updateStatus,editPirsonalInfo,editEducation,addEducation,addLanguage ,editlanguage,addWorkExperiance,editWorkExperiance,deleteWorkExperiance,deleteLanguage,deleteEducation,getallEducation, getStudentEducation, getStudentworkExperience, getStudentlanguages,MobileVerify,EmailVerify} = require('../controllers/studentController')
+const { addStudent, getStudentById, getStudents, assignedManager, createStatus, editStatus, getAllStatus, getStatusById, changeStatus, editStudent,updateStatus,editPirsonalInfo,editEducation,addEducation,addLanguage ,editlanguage,addWorkExperiance,editWorkExperiance,deleteWorkExperiance,deleteLanguage,deleteEducation,getallEducation, getStudentEducation, getStudentworkExperience, getStudentlanguages,MobileVerify,EmailVerify, deleteStatusById} = require('../controllers/studentController')
 const { protect } = require('../middleware/authMiddleware')
 
 
@@ -17,6 +17,7 @@ router.get('/get', protect, getStudents)
 router.post('/createStatus', createStatus)
 router.post('/editStatus', protect, editStatus)
 router.get('/getAllStatus', protect, getAllStatus)
+router.get('/deleteStatusById/:id', protect, deleteStatusById)
 router.post('/changeStatus', protect, changeStatus)
 router.get('/getStatusById/:id', protect, getStatusById)
 router.get('/:id', protect, getStudentById)

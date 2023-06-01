@@ -334,6 +334,21 @@ const getStatusById = asyncHandler(async (req, res) => {
     }
 })
 
+
+const deleteStatusById = asyncHandler(async (req, res) => {
+    try {
+        const status = await Status.findByIdAndDelete(req.params.id);
+
+        res.status(200).json(status).end();
+    } catch (err) {
+        return res.status(400).json({
+            success: false,
+            msg: "Error in getting status. " + err.message,
+            data: null,
+        });
+    }
+})
+
 const changeStatus = asyncHandler(async (req, res) => {
     try {
         const student = await Student.findOneAndUpdate(req.body.studentId, {
@@ -751,5 +766,6 @@ const EmailVerify = asyncHandler(async (req, res) => {
 module.exports = {
     addStudent, getStudentById, getStudents, assignedManager, createStatus, editStatus, getAllStatus, getStatusById, changeStatus, editStudent, updateStatus, editPirsonalInfo, editEducation, addEducation, addLanguage, editlanguage, addWorkExperiance, editWorkExperiance, deleteWorkExperiance, deleteLanguage, deleteEducation,
     getallEducation, getStudentEducation, getStudentworkExperience,
-    getStudentlanguages,MobileVerify,EmailVerify
+    getStudentlanguages,MobileVerify,EmailVerify,
+    deleteStatusById
 }
