@@ -54,6 +54,47 @@ const registerUser = asyncHandler(async (req, res) => {
     }
 })
 
+const updateUserProfile = asyncHandler(async (req, res) => {
+    const { name, id, phoneNumber, email } = req.body
+
+    if (!name) {
+        res.status(400)
+        throw new Error('Name fields are required!')
+    }
+
+    if (!id) {
+        res.status(400)
+        throw new Error('User id not found!')
+    }
+
+    //check if user exist
+    const userExists = await User.findOne({ _id: id });
+    if (!userExists) {
+        res.status(400)
+        throw new Error('User Not Found')
+    }
+
+    let user = await User.findByIdAndUpdate(id, {
+        name: name,
+        email: email,
+        phoneNumber: phoneNumber
+    });
+    user = await User.findOne({ _id: id });
+    if (user) {
+        res.status(201).json({
+            _id: user.id,
+            name: user.name,
+            email: user.email,
+            phoneNumber: phoneNumber
+        })
+    }
+    else {
+        res.status(400)
+        throw new Error("Invalid user data!")
+    }
+})
+
+
 const updateUser = asyncHandler(async (req, res) => {
     const { name, id, role, phoneNumber, email, is_active } = req.body
 
@@ -271,6 +312,7 @@ module.exports = {
     registerUser,
     loginUser,
     getUserById,
+    updateUserProfile,
     updateUser,
     changePassword,
     forgotPassword,

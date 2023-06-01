@@ -38,7 +38,7 @@ const addLookup = asyncHandler(async (req, res) => {
 
 const getAllLookupData = asyncHandler(async (req, res) => {
     try {
-        const Lookup = await LookupModal.find({}, { _id: 1, lookupGroupName: 1, name: 1 }).sort({ name: 1 });
+        const Lookup = await LookupModal.find({}, { _id: 1, lookupGroupName: 1, name: 1 }).sort({ lookupGroupName: 1 });
         res.status(200).json(Lookup).end();
     } catch (err) {
         return res.status(400).json({
