@@ -97,10 +97,10 @@ const educationsSchema = mongoose.Schema(
             type: String
         },
         fromDate: {
-            type: Date
+            type: Number
         },
         toDate: {
-            type: Date
+            type: Number
         },
         education: {
             type: String

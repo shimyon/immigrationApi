@@ -4,6 +4,8 @@ const Student = StudentModal.StudentModal;
 const Status = StudentModal.StautsModal;
 const uploadFile = require("../middleware/uploadFileMiddleware");
 const { EducationModal, ExpeirenceModal, LanguageModal } = require('../models/studentModel');
+const notificationModel = require('../models/notificationModel')
+const User = require('../models/userModel')
 
 const addStudent = asyncHandler(async (req, res) => {
     try {
@@ -86,7 +88,20 @@ const addStudent = asyncHandler(async (req, res) => {
             language: language,
             status: req.body.status,
         });
+
+
         if (savedStudent) {
+            let resuser = await User.find({ role: 'Receptionist' }).lean();
+            let date = new Date();
+            let insertdata = resuser.map(f => ({
+                description: `New student(${req.body.studentName}) entry has been created`,
+                date: date,
+                userId: f._id,
+                Isread: false
+            }));
+            if (insertdata.length > 0) {
+                const savedNotification = await notificationModel.insertMany(insertdata);
+            }
             res.status(201).json({
                 success: true,
                 message: "Student added successfully."
@@ -225,6 +240,16 @@ const assignedManager = asyncHandler(async (req, res) => {
             assignedManager: req.body.manager,
             updatedBy: req.body.userId
         });
+
+        let date = new Date();
+        const savedNotification = await notificationModel.create({
+            description: `New user ${student.name} has been assigned to you.`,
+            date: date,
+            userId: req.body.manager,
+            Isread: false
+        });
+        
+
         res.status(200).json({ message: "Manager assigned successfully." }).end();
     } catch (err) {
         return res.status(400).json({
@@ -723,10 +748,10 @@ const MobileVerify = asyncHandler(async (req, res) => {
                 msg: 'Mobile number already exist'
             });
         }
-        else{
+        else {
             return res.status(400).json({
                 success: true,
-                
+
             });
         }
     } catch (err) {
@@ -748,10 +773,10 @@ const EmailVerify = asyncHandler(async (req, res) => {
                 msg: 'Email already exist'
             });
         }
-        else{
+        else {
             return res.status(400).json({
                 success: true,
-                
+
             });
         }
     } catch (err) {
@@ -766,6 +791,6 @@ const EmailVerify = asyncHandler(async (req, res) => {
 module.exports = {
     addStudent, getStudentById, getStudents, assignedManager, createStatus, editStatus, getAllStatus, getStatusById, changeStatus, editStudent, updateStatus, editPirsonalInfo, editEducation, addEducation, addLanguage, editlanguage, addWorkExperiance, editWorkExperiance, deleteWorkExperiance, deleteLanguage, deleteEducation,
     getallEducation, getStudentEducation, getStudentworkExperience,
-    getStudentlanguages,MobileVerify,EmailVerify,
+    getStudentlanguages, MobileVerify, EmailVerify,
     deleteStatusById
 }
