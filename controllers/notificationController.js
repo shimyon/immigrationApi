@@ -1,4 +1,4 @@
-const {ObjectId} = require('mongodb');
+const { ObjectId } = require('mongodb');
 const asyncHandler = require('express-async-handler')
 const notificationModel = require('../models/notificationModel')
 const addNotification = asyncHandler(async (req, res) => {
@@ -90,7 +90,7 @@ const getAllNotificationByUId = asyncHandler(async (req, res) => {
     try {
         // const userExists = await User.findOne({ _id: id });
 
-        const notification = await notificationModel.find({ userId: req.body.userId });
+        const notification = await notificationModel.find({ userId: req.body.userId }).sort({ createdAt: -1 });
 
         res.status(200).json({
             success: true,
