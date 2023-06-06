@@ -130,12 +130,15 @@ const setmarkasread = asyncHandler(async (req, res) => {
 const getMostRecentById = asyncHandler(async (req, res) => {
     try {
         const { userId } = req.body;
-        const notification = await notificationModel.find({ userId, Isread: false }).limit(3).sort('createdAt desc');
-
+        const notification = await notificationModel.find({ userId, Isread: false }).limit(3).sort({ createdAt: -1 });
+        const count = await notificationModel.countDocuments({ userId, Isread: false }).exec();
         res.status(200).json({
             success: true,
             msg: "",
-            data: notification,
+            data: {
+                notification,
+                count 
+            },
         }).end();
     } catch (err) {
         return res.status(400).json({
