@@ -33,6 +33,10 @@ const studentSchema = mongoose.Schema(
             required: [true, 'Please add email'],
 
         },
+        visaApplyCountry: {
+            type: String,
+            required: [true, 'Please visa apply country'],
+        },
         nationality: {
             type: String
         },
@@ -73,6 +77,14 @@ const studentSchema = mongoose.Schema(
             ref: 'Languages'
         }],
         assignedManager: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'User'
+        },
+        assignedManagerRequest: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'User'
+        },
+        assignedManagerRequestBy: {
             type: mongoose.Schema.Types.ObjectId,
             ref: 'User'
         },

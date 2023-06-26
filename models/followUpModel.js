@@ -3,17 +3,15 @@ const mongoose = require('mongoose')
 
 const followUpSchema = mongoose.Schema(
     {
-        name: {
-            type: String,
-            required: [true, 'Please add a name'],
-        },
-        mobileNo: {
-            type: String,
-            required: [true, 'Please add an mobileNo'],
-        },
-        studentId: {
+        userId: {
             type: mongoose.Schema.Types.ObjectId,
-            ref: 'student'
+            ref: 'User',
+            required: [true, 'Please select a User'],
+        }, 
+       studentId: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'Students',
+            required: [true, 'Please select a student'],
         },
         date: {
             type: Date,
@@ -23,6 +21,10 @@ const followUpSchema = mongoose.Schema(
             type: String,
             required: [true, 'Please add an remark'],
         },
+        notificationId: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'notification'
+        }
     },
     {
         timestamps: true,

@@ -1,14 +1,13 @@
 const asyncHandler = require('express-async-handler')
 const followUpModel = require('../models/followUpModel')
 const followUp = followUpModel.followUpModel;
-
+const moment = require('moment');
 
 const addFollowUp = asyncHandler(async (req, res) => {
     try {
         const savedfollowup = await followUpModel.create({
-            name: req.body.name,
+            userId: req.user.id,
             date: req.body.date,
-            mobileNo: req.body.mobileNo,
             studentId: req.body.studentId,
             remark: req.body.remark
         });
@@ -34,9 +33,7 @@ const addFollowUp = asyncHandler(async (req, res) => {
 const editFollowUp = asyncHandler(async (req, res) => {
     try {
         let updatecount = await followUpModel.findByIdAndUpdate(req.body.id, {
-            name: req.body.name,
             date: req.body.date,
-            mobileNo: req.body.mobileNo,
             studentId: req.body.studentId,
             remark: req.body.remark
         });
@@ -78,13 +75,30 @@ const deleteFollowUp = asyncHandler(async (req, res) => {
 
 const getFollowupList = async (req, res) => {
     try {
-        let followUp = await followUpModel.find({});
+        const body = { ...req.body };
+        const today = moment().startOf('day');
+        let filter = { userId: req.user.id };
+        if (body.tense == "future") {
+            filter.date = {
+                $gte: moment(today).endOf('day').toDate()
+            };
+        } else if (body.tense == "past") {
+            filter.date = {
+                $lte: today.toDate()
+            };
+        } else {
+            filter.date = {
+                $gte: today.toDate(),
+                $lte: moment(today).endOf('day').toDate()
+            };
+        }
+        let followUp = await followUpModel.find(filter).populate('studentId', '_id name mobileNumber email visaApplyCountry photo');
         res.status(200).json({
             success: true,
             message: "",
             data: followUp
         }).end();
-    } catch (error) {
+    } catch (err) {
         return res.status(400).json({
             success: false,
             msg: "Error in getting followup list. " + err.message,

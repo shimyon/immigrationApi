@@ -6,6 +6,8 @@ const { errorHandler } = require('./middleware/errorMiddleware')
 const connectDB = require('./config/db')
 const port = process.env.port || 5000
 var cors = require('cors');
+var cron = require('node-cron');
+
 const path = require('path')
 const swaggerUi = require('swagger-ui-express')
 swaggerDocument = require('./swagger.json');
@@ -28,4 +30,10 @@ app.use('/api/dashboard', require('./routes/dashboardRoute'));
 app.use('/api/notification', require('./routes/notificationRoute'));
 
 app.use(errorHandler)
+
+
+cron.schedule('1 0-23 * * *', () => {
+    console.log('running a task every hours - ' + new Date());
+});
+
 app.listen(port, () => console.log(`Listening at port ${port}`))

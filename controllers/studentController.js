@@ -76,6 +76,7 @@ const addStudent = asyncHandler(async (req, res) => {
             email: req.body.email,
             nationality: req.body.nationality,
             citizen: req.body.citizen,
+            visaApplyCountry: req.body.visaApplyCountry,
             photo: imageName,
             spouseName: req.body.spouseName,
             spouseRelation: req.body.spouseRelation,
@@ -205,7 +206,38 @@ const getStudentById = asyncHandler(async (req, res) => {
 
 const getStudents = asyncHandler(async (req, res) => {
     try {
-        const student = await Student.find().populate("education").populate("workExperience").populate("language").populate("assignedManager", '_id name email phoneNumber').populate("status");
+        let filter = {};
+        if (req.user.role == 'Manager') {
+            filter = { assignedManager: req.user._id }
+        } else if (req.user.role == 'Receptionist') {
+            filter = { assignedManager: { $eq: null }, assignedManagerRequest: { $eq: null } }
+        }
+        const student = await Student.find(filter).sort({updatedAt: -1})
+            .populate("education")
+            .populate("workExperience")
+            .populate("language")
+            .populate("assignedManager", '_id name email phoneNumber')
+            .populate("status");
+
+        res.status(200).json(student).end();
+    } catch (err) {
+        return res.status(400).json({
+            success: false,
+            msg: "Error in getting student. " + err.message,
+            data: null,
+        });
+
+    }
+})
+
+const getStudentPending = asyncHandler(async (req, res) => {
+    // assignedManagerRequest
+    try {
+        let filter = { assignedManager: { $eq: null }, assignedManagerRequest: { $ne: null } };
+        if (req.user.role == 'Manager') {
+            filter.assignedManagerRequest = req.user._id;
+        }
+        const student = await Student.find(filter).populate("education").populate("workExperience").populate("language").populate("assignedManager", '_id name email phoneNumber').populate("status");
 
         res.status(200).json(student).end();
     } catch (err) {
@@ -237,20 +269,80 @@ const updateStatus = asyncHandler(async (req, res) => {
 const assignedManager = asyncHandler(async (req, res) => {
     try {
         const student = await Student.findByIdAndUpdate(req.body.studentId, {
-            assignedManager: req.body.manager,
+            assignedManagerRequest: req.body.manager,
+            assignedManagerRequestBy: req.body.userId,
             updatedBy: req.body.userId
         });
 
         let date = new Date();
         const savedNotification = await notificationModel.create({
-            description: `New user ${student.name} has been assigned to you.`,
+            description: `User ${student.name} request has been send to you.`,
             date: date,
             userId: req.body.manager,
             Isread: false
         });
-        
+
 
         res.status(200).json({ message: "Manager assigned successfully." }).end();
+    } catch (err) {
+        return res.status(400).json({
+            success: false,
+            msg: "Error in updating manager. " + err.message,
+            data: null,
+        });
+
+    }
+})
+
+const cancelManagerRequest = asyncHandler(async (req, res) => {
+    try {
+        const student = await Student.findByIdAndUpdate(req.body.studentId, {
+            assignedManagerRequest: null,
+            updatedBy: req.user._id
+        });
+
+        if (student.assignedManagerRequestBy) {
+            let date = new Date();
+            const savedNotification = await notificationModel.create({
+                description: `Request cancelled for ${student.name}.`,
+                date: date,
+                userId: student.assignedManagerRequestBy,
+                Isread: false
+            });
+        }
+
+
+        res.status(200).json({ message: "Cancel request successfully." }).end();
+    } catch (err) {
+        return res.status(400).json({
+            success: false,
+            msg: "Error in updating manager. " + err.message,
+            data: null,
+        });
+
+    }
+})
+
+const acceptManagerRequest = asyncHandler(async (req, res) => {
+    try {
+        const student = await Student.findByIdAndUpdate(req.body.studentId, {
+            assignedManagerRequest: null,
+            assignedManager: req.user._id,
+            updatedBy: req.user._id
+        });
+
+        if (student.assignedManagerRequestBy) {
+            let date = new Date();
+            const savedNotification = await notificationModel.create({
+                description: `Request accepted for ${student.name}.`,
+                date: date,
+                userId: student.assignedManagerRequestBy,
+                Isread: false
+            });
+        }
+
+
+        res.status(200).json({ message: "Request accepted successfully." }).end();
     } catch (err) {
         return res.status(400).json({
             success: false,
@@ -792,5 +884,8 @@ module.exports = {
     addStudent, getStudentById, getStudents, assignedManager, createStatus, editStatus, getAllStatus, getStatusById, changeStatus, editStudent, updateStatus, editPirsonalInfo, editEducation, addEducation, addLanguage, editlanguage, addWorkExperiance, editWorkExperiance, deleteWorkExperiance, deleteLanguage, deleteEducation,
     getallEducation, getStudentEducation, getStudentworkExperience,
     getStudentlanguages, MobileVerify, EmailVerify,
-    deleteStatusById
+    deleteStatusById,
+    getStudentPending,
+    cancelManagerRequest,
+    acceptManagerRequest
 }

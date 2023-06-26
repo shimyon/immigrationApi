@@ -5,7 +5,7 @@ const router = express.Router();
 const { uploadFile } = require('../middleware/uploadFileMiddleware');
 
 
-const { addStudent, getStudentById, getStudents, assignedManager, createStatus, editStatus, getAllStatus, getStatusById, changeStatus, editStudent,updateStatus,editPirsonalInfo,editEducation,addEducation,addLanguage ,editlanguage,addWorkExperiance,editWorkExperiance,deleteWorkExperiance,deleteLanguage,deleteEducation,getallEducation, getStudentEducation, getStudentworkExperience, getStudentlanguages,MobileVerify,EmailVerify, deleteStatusById} = require('../controllers/studentController')
+const { addStudent, getStudentById, getStudents, assignedManager, createStatus, editStatus, getAllStatus, getStatusById, changeStatus, editStudent,updateStatus,editPirsonalInfo,editEducation,addEducation,addLanguage ,editlanguage,addWorkExperiance,editWorkExperiance,deleteWorkExperiance,deleteLanguage,deleteEducation,getallEducation, getStudentEducation, getStudentworkExperience, getStudentlanguages,MobileVerify,EmailVerify, deleteStatusById, getStudentPending, cancelManagerRequest, acceptManagerRequest} = require('../controllers/studentController')
 const { protect } = require('../middleware/authMiddleware')
 
 
@@ -14,6 +14,9 @@ router.post('/edit', protect, editStudent)
 router.post('/assignedManager', protect, assignedManager)
 router.post('/updateStatus', protect, updateStatus)
 router.get('/get', protect, getStudents)
+router.get('/getPending', protect, getStudentPending)
+router.post('/cancelManagerRequest', protect, cancelManagerRequest)
+router.post('/acceptManagerRequest', protect, acceptManagerRequest)
 router.post('/createStatus', createStatus)
 router.post('/editStatus', protect, editStatus)
 router.get('/getAllStatus', protect, getAllStatus)

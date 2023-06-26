@@ -1,7 +1,10 @@
 const express = require('express')
 const router = express.Router();
 const { protect } = require('../middleware/authMiddleware')
-const { addNotification,editNotification,deleteNotification ,getAllNotification,getAllNotificationByUId,setmarkasread,getMostRecentById} = require('../controllers/notificationController')
+const {
+    addNotification, editNotification, deleteNotification,
+    getAllNotification, getAllNotificationByUId,
+    setmarkasread, getMostRecentById } = require('../controllers/notificationController')
 
 router.post('/save', addNotification);
 router.post('/edit', protect, editNotification)
