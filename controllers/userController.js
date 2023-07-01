@@ -4,6 +4,7 @@ const asyncHandler = require('express-async-handler')
 const User = require('../models/userModel')
 const { json } = require('express')
 const { resolveHostname } = require('nodemailer/lib/shared')
+const tenantModel = require('../models/tenantModel')
 
 //@desc Register New User
 //@route POST api/user
@@ -224,9 +225,21 @@ const forgotPassword = asyncHandler(async (req, res) => {
 //@route POST api/users/login
 //@access Public
 const loginUser = asyncHandler(async (req, res) => {
-    const { email, password } = req.body
+    const { email, password, TenantId } = req.body
 
-    const user = await User.findOne({ email: email, is_active: true })
+    const tenant = await tenantModel.findById(TenantId);
+    if (tenant) {
+        if (!tenant.is_active) {
+            res.status(200)
+            throw new Error("Company is not active, please contact the administrator.");
+        }
+    } else {
+        res.status(200)
+        throw new Error("Invalid company name");
+
+    }
+
+    const user = await User.findOne({ TenantId: TenantId, email: email, is_active: true })
     if (!user) {
         res.status(200)
         throw new Error("User Not Found!")
@@ -238,6 +251,7 @@ const loginUser = asyncHandler(async (req, res) => {
             name: user.name,
             email: user.email,
             role: user.role,
+            TenantId: user.TenantId,
             token: generateToken(user.id),
         })
     }

@@ -3,6 +3,10 @@ const mongoose = require('mongoose')
 
 const userSchema = mongoose.Schema(
   {
+    TenantId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Tenant'
+    },
     name: {
       type: String,
       required: [true, 'Please add a name'],
@@ -25,9 +29,9 @@ const userSchema = mongoose.Schema(
       type: String,
       required: [true, 'Please add a role'],
     },
-    is_active:{
-      type:Boolean,
-      default:true
+    is_active: {
+      type: Boolean,
+      default: true
     }
   },
   {
