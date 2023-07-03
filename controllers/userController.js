@@ -10,7 +10,7 @@ const tenantModel = require('../models/tenantModel')
 //@route POST api/user
 //@access Public
 const registerUser = asyncHandler(async (req, res) => {
-    const { name, email, password, role, phoneNumber, is_active } = req.body
+    const { name, email, password, role, phoneNumber, is_active,location } = req.body
 
     if (!name || !email || !password || !role) {
         res.status(400)
@@ -33,6 +33,7 @@ const registerUser = asyncHandler(async (req, res) => {
         name,
         email,
         role,
+        location,
         phoneNumber,
         password: hashedPassword,
         is_active: is_active
@@ -43,6 +44,7 @@ const registerUser = asyncHandler(async (req, res) => {
             _id: user.id,
             name: user.name,
             email: user.email,
+            location: user.location,
             role: user.role,
             phoneNumber: phoneNumber,
             is_active: is_active,
@@ -129,6 +131,7 @@ const updateUser = asyncHandler(async (req, res) => {
             name: user.name,
             email: user.email,
             role: user.role,
+            location: user.location,
             phoneNumber: phoneNumber,
             is_active: is_active,
             token: generateToken(user.id),
@@ -273,6 +276,7 @@ const getUserById = asyncHandler(async (req, res) => {
         name,
         email,
         role,
+        location,
         is_active,
         phoneNumber
     })
@@ -304,7 +308,10 @@ const getAllUser = asyncHandler(async (req, res) => {
         if (req.body.role) {
             fillter.role = req.body.role;
         }
-        const user = await User.find(fillter, { _id: 1, email: 1, name: 1, role: 1, is_active: 1, phoneNumber: 1 }).sort({ 'is_active': -1, name: 1 });
+        if (req.body.location) {
+            fillter.location = req.body.location;
+        }
+        const user = await User.find(fillter, { _id: 1, email: 1, name: 1, role: req.body.role, is_active: 1, phoneNumber: 1,location:req.body.location }).sort({ 'is_active': -1, name: 1 });
         res.status(200).json(user).end();
     } catch (err) {
         return res.status(400).json({

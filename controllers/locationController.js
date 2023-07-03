@@ -1,8 +1,8 @@
-const { LocationSerAdd, LocationSerEdit, LocationsSerAll } = require('../services/locationServices');
+const { LocationSerAdd, LocationSerEdit } = require('../services/locationServices');
 
 const asyncHandler = require('express-async-handler')
 const { JsonResult } = require("../utility/jsonResult");
-
+const locationModel = require("../models/locationModel");
 const LocationById = asyncHandler(async (req, res) => {
     let returnval = JsonResult();
     try {
@@ -35,16 +35,21 @@ const LocationEdit = asyncHandler(async (req, res) => {
 });
 
 const LocationsAll = asyncHandler(async (req, res) => {
-    let returnval = JsonResult();
     try {
-        let TenantId = req.user.TenantId;
-        returnval = LocationsSerAll(TenantId)
-        res.status(201).json(returnval).end();
+        const { TenantId } = req.body;
+        const Locations = await locationModel.find({ TenantId, Isread: false }).limit(3).sort({ createdAt: -1 });
+        res.status(200).json({
+            success: true,
+            msg: "",
+            data:Locations,
+        }).end();
     } catch (err) {
-        returnval.data = err;
-        returnval.msg = err.message;
-        returnval.success = false;
-        res.status(400).json(returnval);
+        return res.status(400).json({
+            success: false,
+            msg: "Error in getting status. " + err.message,
+            data: null,
+        });
+
     }
 });
 

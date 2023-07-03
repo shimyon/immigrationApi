@@ -5,7 +5,7 @@ const { LocationAdd, LocationsAll, LocationEdit, LocationById } = require('../co
 
 const { protect } = require('../middleware/authMiddleware')
 router.post('/add', protect, LocationAdd);
-router.get('/getAll', protect, LocationsAll)
+router.post('/getAll', LocationsAll)
 router.post('/edit', protect, LocationEdit)
 router.get('/getbyid/:id', protect, LocationById)
 module.exports = router

@@ -54,18 +54,4 @@ const LocationSerGetById = async (val) => {
     return returnval;
 }
 
-
-const LocationsSerAll = async (TenantId) => {
-    let returnval = JsonResult();
-    await locationModel.find({ TenantId: TenantId }).then(s => {
-        returnval.data = s;
-    })
-        .catch(err => {
-            returnval.success = false;
-            returnval.data = err;
-            returnval.msg = err.message;
-        })
-    return returnval;
-}
-
-module.exports = { LocationSerAdd, LocationSerEdit, LocationSerGetById, LocationsSerAll };
+module.exports = { LocationSerAdd, LocationSerEdit, LocationSerGetById, };

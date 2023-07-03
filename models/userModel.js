@@ -7,6 +7,10 @@ const userSchema = mongoose.Schema(
       type: mongoose.Schema.Types.ObjectId,
       ref: 'Tenant'
     },
+    location: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'location'
+    },
     name: {
       type: String,
       required: [true, 'Please add a name'],
