@@ -15,7 +15,7 @@ router.post('/changePassword', protect, changePassword)
 router.post('/forgotPassword', protect, forgotPassword)
 router.post('/login', loginUser)
 router.get('/getManagers', protect, getManager)
-router.get('/getAllUser', protect, getAllUser)
+router.post('/getAllUser', protect, getAllUser)
 router.get('/:id', protect, getUserById)
 
 module.exports = router

@@ -28,6 +28,7 @@ app.use('/api/lookup', require('./routes/lookupRoutes'));
 app.use('/api/followUp', require('./routes/followUpRoute'));
 app.use('/api/dashboard', require('./routes/dashboardRoute'));
 app.use('/api/notification', require('./routes/notificationRoute'));
+app.use('/api/location', require('./routes/locationRoute'));
 
 app.use(errorHandler)
 
