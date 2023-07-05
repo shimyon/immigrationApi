@@ -10,7 +10,7 @@ const tenantModel = require('../models/tenantModel')
 //@route POST api/user
 //@access Public
 const registerUser = asyncHandler(async (req, res) => {
-    const { name, email, password, role, phoneNumber, is_active,location } = req.body
+    const { name, email, password,TenantId, role, phoneNumber, is_active,location } = req.body
 
     if (!name || !email || !password || !role) {
         res.status(400)
@@ -34,6 +34,7 @@ const registerUser = asyncHandler(async (req, res) => {
         email,
         role,
         location,
+        TenantId,
         phoneNumber,
         password: hashedPassword,
         is_active: is_active
@@ -44,6 +45,7 @@ const registerUser = asyncHandler(async (req, res) => {
             _id: user.id,
             name: user.name,
             email: user.email,
+            TenantId:user.TenantId,
             location: user.location,
             role: user.role,
             phoneNumber: phoneNumber,
@@ -269,7 +271,7 @@ const loginUser = asyncHandler(async (req, res) => {
 //@route POST api/users/me
 //@access Private
 const getUserById = asyncHandler(async (req, res) => {
-    const { _id, name, email, role, is_active, phoneNumber } = await User.findById(req.params.id)
+    const { _id, name, email, role,location, is_active, phoneNumber } = await User.findById(req.params.id)
 
     res.status(200).json({
         id: _id,
@@ -311,7 +313,7 @@ const getAllUser = asyncHandler(async (req, res) => {
         if (req.body.location) {
             fillter.location = req.body.location;
         }
-        const user = await User.find(fillter, { _id: 1, email: 1, name: 1, role: req.body.role, is_active: 1, phoneNumber: 1,location:req.body.location }).sort({ 'is_active': -1, name: 1 });
+        const user = await User.find(fillter, { _id: 1, email: 1, name: 1, role: 1, is_active: 1, phoneNumber: 1,location:1 }).sort({ 'is_active': -1, name: 1 });
         res.status(200).json(user).end();
     } catch (err) {
         return res.status(400).json({

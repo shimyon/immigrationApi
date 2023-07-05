@@ -213,7 +213,7 @@ const getStudents = asyncHandler(async (req, res) => {
         } else if (req.user.role == 'Receptionist') {
             filter = { assignedManager: { $eq: null }, assignedManagerRequest: { $eq: null } }
         }
-        if (req.body.location) {
+        else if (req.body.location) {
             filter = {location:req.body.location};
         }
         const student = await Student.find(filter).sort({updatedAt: -1})
@@ -501,6 +501,7 @@ const editPirsonalInfo = asyncHandler(async (req, res) => {
             email: req.body.email,
             nationality: req.body.nationality,
             citizen: req.body.citizen,
+            visaApplyCountry: req.body.visaApplyCountry,
             // photo: req.body.imageName.replace(",", ""),
             spouseName: req.body.spouseName,
             spouseRelation: req.body.spouseRelation,
@@ -649,28 +650,20 @@ const addEducation = asyncHandler(async (req, res) => {
         });
     }
 })
-
 const addLanguage = asyncHandler(async (req, res) => {
     try {
-        const studentId = req.params.id;
-        var existLanguage = await LanguageModal.findOne({ languageName: req.body.languageName });
-        // var existstdLanguage = await Student.findOne({ languageName: req.body.languageName });
-        if (existLanguage) {
-            return res.status(400).json({
-                success: false,
-                msg: 'Language already exist'
-            });
-        }
-        const language = await LanguageModal.create({
+        const studentId = req.params.id; 
+        const existLanguage = await LanguageModal.create({
             languageName: req.body.languageName,
             speak: req.body.speak,
             write: req.body.write,
             listening: req.body.listening,
             read: req.body.read
         })
-        if (language) {
-            var addEducation = await Student.findByIdAndUpdate(
-                studentId, { $push: { language: language._id } }
+        console.log(existLanguage)
+        if (existLanguage) {
+            var addLanguage = await Student.findByIdAndUpdate(
+                studentId, { $push: { language: existLanguage._id } }
             )
         }
         res.status(201).json({
