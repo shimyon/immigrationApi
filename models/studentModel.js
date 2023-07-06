@@ -96,6 +96,10 @@ const studentSchema = mongoose.Schema(
             type: mongoose.Schema.Types.ObjectId,
             ref: 'location'
         },
+        TenantId: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'Tenant'
+          },
         updatedBy: {
             type: mongoose.Schema.Types.ObjectId,
             ref: 'User'

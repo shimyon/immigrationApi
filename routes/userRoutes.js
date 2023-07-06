@@ -14,7 +14,7 @@ router.post('/updateUser', protect, updateUser)
 router.post('/changePassword', protect, changePassword)
 router.post('/forgotPassword', protect, forgotPassword)
 router.post('/login', loginUser)
-router.get('/getManagers', protect, getManager)
+router.post('/getManagers', protect, getManager)
 router.post('/getAllUser', protect, getAllUser)
 router.get('/:id', protect, getUserById)
 

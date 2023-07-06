@@ -1,36 +1,51 @@
-const { LocationSerAdd, LocationSerEdit } = require('../services/locationServices');
-
 const asyncHandler = require('express-async-handler')
 const { JsonResult } = require("../utility/jsonResult");
 const locationModel = require("../models/locationModel");
 const LocationById = asyncHandler(async (req, res) => {
-    let returnval = JsonResult();
     try {
-        let TenantId = req.user.TenantId;
-        returnval = LocationById(req.body.id);
-        res.status(201).json(returnval).end();
+        const returnval = await locationModel.findById(req.params.id).lean();
+
+        res.status(200).json(returnval).end();
     } catch (err) {
-        returnval.data = err;
-        returnval.msg = err.message;
-        returnval.success = false;
-        res.status(400).json(returnval);
+        return res.status(400).json({
+            success: false,
+            msg: "Error in getting student. " + err.message,
+            data: null,
+        });
+
     }
 });
 
 const LocationEdit = asyncHandler(async (req, res) => {
-    let returnval = JsonResult();
-    try {
-        let TenantId = req.user.TenantId;
-        returnval = LocationSerEdit(TenantId, {
-            name: req.body.name,
-            is_active: req.body.is_active
+    const locationExists = await locationModel.findOne({ _id: req.body.id });
+    if (!locationExists) {
+        res.status(400).json({
+            success: false,
+            msg: 'Location Not Found',
+            data: "",
         })
-        res.status(201).json(returnval).end();
-    } catch (err) {
-        returnval.data = err;
-        returnval.msg = err.message;
-        returnval.success = false;
-        res.status(400).json(returnval);
+        throw new Error('Location Not Found')
+    }
+
+    let location = await locationModel.findByIdAndUpdate(req.body.id, {
+        name: req.body.name,
+        is_active: req.body.is_active
+    });
+    location = await locationModel.findOne({ _id: req.body.id });
+    if (location) {
+        res.status(201).json({
+            _id: location.id,
+            name: location.name,
+            is_active: location.is_active,
+            success: true,
+        })
+    }
+    else {
+        res.status(400).json({
+            success: false,
+            msg: "Invalid location data!",
+            data: "",
+        })
     }
 });
 
@@ -41,7 +56,7 @@ const LocationsAll = asyncHandler(async (req, res) => {
         res.status(200).json({
             success: true,
             msg: "",
-            data:Locations,
+            data: Locations,
         }).end();
     } catch (err) {
         return res.status(400).json({
@@ -54,25 +69,32 @@ const LocationsAll = asyncHandler(async (req, res) => {
 });
 
 const LocationAdd = asyncHandler(async (req, res) => {
-    let returnval = JsonResult();
-    try {
-        let TenantId = req.user.TenantId;
-        await LocationSerAdd(TenantId, {
-            name: req.body.name,
-            is_active: req.body.is_active
+    const locationExists = await locationModel.findOne({ name: req.body.name, TenantId: req.body.TenantId })
+    if (locationExists) {
+        res.status(200).json({
+            success: false,
+            msg: "Location Already Exists!",
+            data: "",
+        }).end();
+    }
+    const location = await locationModel.create({
+        name: req.body.name,
+        TenantId: req.body.TenantId,
+        is_active: req.body.is_active
+    })
+    if (location) {
+        res.status(201).json({
+            success: true,
+            _id: location.id,
+            name: location.name,
         })
-            .then(res => {
-                returnval = res
-            })
-            .catch(err => {
-                returnval = err
-            });
-        res.status(201).json(returnval).end();
-    } catch (err) {
-        returnval.data = err;
-        returnval.msg = err.message;
-        returnval.success = false;
-        res.status(400).json(returnval);
+    }
+    else {
+        res.status(400).json({
+            success: false,
+            msg: "Invalid data!",
+            data:"",
+        }).end();
     }
 });
 

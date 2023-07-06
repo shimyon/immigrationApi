@@ -11,7 +11,10 @@ const tenantSchema = mongoose.Schema(
     is_active:{
       type:Boolean,
       default:true
-    }
+    },
+    logo: {
+      type: String
+  },
   },
   {
     timestamps: true,

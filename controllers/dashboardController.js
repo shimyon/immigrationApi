@@ -11,11 +11,9 @@ const getdashboardDetails = asyncHandler(async (req, res) => {
     try {
         let result = {
             studentCount: 0,
-            followUpCount: 0,
             status: {}
         };
         result.studentCount = await getStudentCount(req);
-        result.followUpCount = await getFollowUpCount(req);
         result.status = await getStatusAllCount(req);
 
         res.status(200).json({
@@ -38,13 +36,11 @@ const admindashboard = asyncHandler(async (req, res) => {
     try {
         let result = {
             studentCount: 0,
-            followUpCount: 0,
             status: {},
             studentOverMonth: {},
             manageOverMonth: {},
         };
         result.studentCount = await getStudentCount(req);
-        result.followUpCount = await getFollowUpCount(req);
         result.status = await getStatusAllCount(req);
         result.studentOverMonth = await getStudentOverMonth(req);
         result.manageOverMonth = await getManagerOverMonth(req);
@@ -74,14 +70,6 @@ const getStudentCount = (req) => {
             filter = { assignedManager: { $eq: null }, assignedManagerRequest: { $eq: null }, ...filter };
         }
         Student.countDocuments({}, (err, countstudent) => {
-            resolve(countstudent);
-        })
-    });
-}
-
-const getFollowUpCount = (req) => {
-    return new Promise((resolve, reject) => {
-        followUpModel.countDocuments({}, (err, countstudent) => {
             resolve(countstudent);
         })
     });

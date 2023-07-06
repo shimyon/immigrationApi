@@ -78,6 +78,7 @@ const addStudent = asyncHandler(async (req, res) => {
             citizen: req.body.citizen,
             visaApplyCountry: req.body.visaApplyCountry,
             location: req.body.location,
+            TenantId: req.body.TenantId,
             photo: imageName,
             spouseName: req.body.spouseName,
             spouseRelation: req.body.spouseRelation,
@@ -215,6 +216,9 @@ const getStudents = asyncHandler(async (req, res) => {
         }
         else if (req.body.location) {
             filter = {location:req.body.location};
+        }
+        else if (req.body.tenant) {
+            filter = {TenantId:req.body.tenant};
         }
         const student = await Student.find(filter).sort({updatedAt: -1})
             .populate("education")
