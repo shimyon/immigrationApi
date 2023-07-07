@@ -50,4 +50,18 @@ const tenantcheck = asyncHandler(async (req, res) => {
         }).end();
     }
 })
-module.exports = { tenantadd ,tenantcheck};
+const tenantById = asyncHandler(async (req, res) => {
+    try {
+        const returnval = await tenantModel.findById(req.params.id).lean();
+
+        res.status(200).json(returnval).end();
+    } catch (err) {
+        return res.status(400).json({
+            success: false,
+            msg: "Error in getting student. " + err.message,
+            data: null,
+        });
+
+    }
+});
+module.exports = { tenantadd ,tenantcheck,tenantById};
