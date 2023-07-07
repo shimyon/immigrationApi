@@ -69,7 +69,14 @@ const getStudentCount = (req) => {
         } else if (req.user.role == 'Receptionist') {
             filter = { assignedManager: { $eq: null }, assignedManagerRequest: { $eq: null }, ...filter };
         }
-        Student.countDocuments({}, (err, countstudent) => {
+        if (req.body.location) {
+            filter = {location:req.body.location,...filter};
+        }
+        
+        if (req.user.TenantId) {
+            filter = {TenantId:req.user.TenantId,...filter};
+        }
+        Student.countDocuments(filter, (err, countstudent) => {
             resolve(countstudent);
         })
     });

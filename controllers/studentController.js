@@ -214,11 +214,12 @@ const getStudents = asyncHandler(async (req, res) => {
         } else if (req.user.role == 'Receptionist') {
             filter = { assignedManager: { $eq: null }, assignedManagerRequest: { $eq: null } }
         }
-        else if (req.body.location) {
-            filter = {location:req.body.location};
+        if (req.body.location) {
+            filter = {location:req.body.location,...filter};
         }
-        else if (req.body.tenant) {
-            filter = {TenantId:req.body.tenant};
+        
+        if (req.user.TenantId) {
+            filter = {TenantId:req.user.TenantId,...filter};
         }
         const student = await Student.find(filter).sort({updatedAt: -1})
             .populate("education")
@@ -237,7 +238,34 @@ const getStudents = asyncHandler(async (req, res) => {
 
     }
 })
+const getallStudentlist = asyncHandler(async (req, res) => {
+    try {
+        let filter = {};
+        
+        if (req.body.location) {
+            filter = {location:req.body.location,...filter};
+        }
+        
+        if (req.user.TenantId) {
+            filter = {TenantId:req.user.TenantId,...filter};
+        }
+        const student = await Student.find(filter).sort({updatedAt: -1})
+            .populate("education")
+            .populate("workExperience")
+            .populate("language")
+            .populate("assignedManager", '_id name email phoneNumber')
+            .populate("status");
 
+        res.status(200).json(student).end();
+    } catch (err) {
+        return res.status(400).json({
+            success: false,
+            msg: "Error in getting student. " + err.message,
+            data: null,
+        });
+
+    }
+})
 const getStudentPending = asyncHandler(async (req, res) => {
     // assignedManagerRequest
     try {
@@ -882,7 +910,7 @@ const EmailVerify = asyncHandler(async (req, res) => {
     }
 })
 module.exports = {
-    addStudent, getStudentById, getStudents, assignedManager, createStatus, editStatus, getAllStatus, getStatusById, changeStatus, editStudent, updateStatus, editPirsonalInfo, editEducation, addEducation, addLanguage, editlanguage, addWorkExperiance, editWorkExperiance, deleteWorkExperiance, deleteLanguage, deleteEducation,
+    addStudent, getStudentById, getStudents,getallStudentlist, assignedManager, createStatus, editStatus, getAllStatus, getStatusById, changeStatus, editStudent, updateStatus, editPirsonalInfo, editEducation, addEducation, addLanguage, editlanguage, addWorkExperiance, editWorkExperiance, deleteWorkExperiance, deleteLanguage, deleteEducation,
     getallEducation, getStudentEducation, getStudentworkExperience,
     getStudentlanguages, MobileVerify, EmailVerify,
     deleteStatusById,
