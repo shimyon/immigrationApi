@@ -257,8 +257,8 @@ const loginUser = asyncHandler(async (req, res) => {
             name: user.name,
             email: user.email,
             role: user.role,
-            TenantId: user.TenantId,
-            location: user.location,
+            TenantId: TenantId,
+            location: location,
             token: generateToken(user.id),
         })
     }
