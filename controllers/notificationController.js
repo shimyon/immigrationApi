@@ -137,7 +137,7 @@ const getMostRecentById = asyncHandler(async (req, res) => {
             msg: "",
             data: {
                 notification,
-                count 
+                count
             },
         }).end();
     } catch (err) {

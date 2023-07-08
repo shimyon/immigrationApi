@@ -3,7 +3,7 @@ const { JsonResult } = require("../utility/jsonResult");
 const locationModel = require("../models/locationModel");
 const LocationById = asyncHandler(async (req, res) => {
     try {
-        const returnval = await locationModel.findById(req.params.id).lean();
+        const returnval = await locationModel.findById(req.params.id).populate("TenantId", '_id name logo').lean();
 
         res.status(200).json(returnval).end();
     } catch (err) {
@@ -52,7 +52,8 @@ const LocationEdit = asyncHandler(async (req, res) => {
 const LocationsAll = asyncHandler(async (req, res) => {
     try {
         const { TenantId } = req.body;
-        const Locations = await locationModel.find({ TenantId, Isread: false }).limit(3).sort({ createdAt: -1 });
+        const Locations = await locationModel.find({ TenantId, Isread: false }).limit(3).sort({ createdAt: -1 })
+        .populate("TenantId", '_id name logo');
         res.status(200).json({
             success: true,
             msg: "",

@@ -94,7 +94,9 @@ const addStudent = asyncHandler(async (req, res) => {
 
 
         if (savedStudent) {
-            let resuser = await User.find({ role: 'Receptionist' }).lean();
+            let resuser = await User.find({ role: 'Receptionist', location: req.body.location, TenantId: req.body.TenantId }).lean();
+            console.log(fillter)
+            console.log(resuser)
             let date = new Date();
             let insertdata = resuser.map(f => ({
                 description: `New student(${req.body.studentName}) entry has been created`,
@@ -215,13 +217,13 @@ const getStudents = asyncHandler(async (req, res) => {
             filter = { assignedManager: { $eq: null }, assignedManagerRequest: { $eq: null } }
         }
         if (req.body.location) {
-            filter = {location:req.body.location,...filter};
+            filter = { location: req.body.location, ...filter };
         }
-        
+
         if (req.user.TenantId) {
-            filter = {TenantId:req.user.TenantId,...filter};
+            filter = { TenantId: req.user.TenantId, ...filter };
         }
-        const student = await Student.find(filter).sort({updatedAt: -1})
+        const student = await Student.find(filter).sort({ updatedAt: -1 })
             .populate("education")
             .populate("workExperience")
             .populate("language")
@@ -241,15 +243,15 @@ const getStudents = asyncHandler(async (req, res) => {
 const getallStudentlist = asyncHandler(async (req, res) => {
     try {
         let filter = {};
-        
+
         if (req.body.location) {
-            filter = {location:req.body.location,...filter};
+            filter = { location: req.body.location, ...filter };
         }
-        
+
         if (req.user.TenantId) {
-            filter = {TenantId:req.user.TenantId,...filter};
+            filter = { TenantId: req.user.TenantId, ...filter };
         }
-        const student = await Student.find(filter).sort({updatedAt: -1})
+        const student = await Student.find(filter).sort({ updatedAt: -1 })
             .populate("education")
             .populate("workExperience")
             .populate("language")
@@ -272,6 +274,13 @@ const getStudentPending = asyncHandler(async (req, res) => {
         let filter = { assignedManager: { $eq: null }, assignedManagerRequest: { $ne: null } };
         if (req.user.role == 'Manager') {
             filter.assignedManagerRequest = req.user._id;
+        }
+        if (req.body.location) {
+            filter = { location: req.body.location, ...filter };
+        }
+
+        if (req.user.TenantId) {
+            filter = { TenantId: req.user.TenantId, ...filter };
         }
         const student = await Student.find(filter).populate("education").populate("workExperience").populate("language").populate("assignedManager", '_id name email phoneNumber').populate("status");
 
@@ -684,7 +693,7 @@ const addEducation = asyncHandler(async (req, res) => {
 })
 const addLanguage = asyncHandler(async (req, res) => {
     try {
-        const studentId = req.params.id; 
+        const studentId = req.params.id;
         const existLanguage = await LanguageModal.create({
             languageName: req.body.languageName,
             speak: req.body.speak,
@@ -910,7 +919,7 @@ const EmailVerify = asyncHandler(async (req, res) => {
     }
 })
 module.exports = {
-    addStudent, getStudentById, getStudents,getallStudentlist, assignedManager, createStatus, editStatus, getAllStatus, getStatusById, changeStatus, editStudent, updateStatus, editPirsonalInfo, editEducation, addEducation, addLanguage, editlanguage, addWorkExperiance, editWorkExperiance, deleteWorkExperiance, deleteLanguage, deleteEducation,
+    addStudent, getStudentById, getStudents, getallStudentlist, assignedManager, createStatus, editStatus, getAllStatus, getStatusById, changeStatus, editStudent, updateStatus, editPirsonalInfo, editEducation, addEducation, addLanguage, editlanguage, addWorkExperiance, editWorkExperiance, deleteWorkExperiance, deleteLanguage, deleteEducation,
     getallEducation, getStudentEducation, getStudentworkExperience,
     getStudentlanguages, MobileVerify, EmailVerify,
     deleteStatusById,

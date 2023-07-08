@@ -3,17 +3,17 @@ const { JsonResult } = require("../utility/jsonResult");
 const tenantModel = require("../models/tenantModel");
 
 const tenantadd = asyncHandler(async (req, res) => {
-    const tenantExists = await tenantModel.findOne({name:req.body.name})
+    const tenantExists = await tenantModel.findOne({ name: req.body.name })
     if (tenantExists) {
         res.status(200).json({
             success: false,
             msg: "Tenant Already Exists!",
-            data:"",
+            data: "",
         }).end();
     }
     const tenant = await tenantModel.create({
-        name:req.body.name,
-        logo:req.file?.filename,
+        name: req.body.name,
+        logo: req.file?.filename,
     })
     if (tenant) {
         res.status(201).json({
@@ -26,14 +26,14 @@ const tenantadd = asyncHandler(async (req, res) => {
         res.status(400).json({
             success: false,
             msg: "Invalid data!",
-            data:"",
+            data: "",
         }).end();
     }
 })
 const tenantcheck = asyncHandler(async (req, res) => {
     const { name } = req.body
     const tenantExists = await tenantModel.findOne({ name })
-    
+
     if (tenantExists) {
         res.status(200).json({
             success: true,
@@ -46,7 +46,7 @@ const tenantcheck = asyncHandler(async (req, res) => {
         res.status(400).json({
             success: false,
             msg: "Invalid Tenant Name!",
-            data:"",
+            data: "",
         }).end();
     }
 })
@@ -64,4 +64,4 @@ const tenantById = asyncHandler(async (req, res) => {
 
     }
 });
-module.exports = { tenantadd ,tenantcheck,tenantById};
+module.exports = { tenantadd, tenantcheck, tenantById };

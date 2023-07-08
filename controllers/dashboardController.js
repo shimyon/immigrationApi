@@ -70,11 +70,11 @@ const getStudentCount = (req) => {
             filter = { assignedManager: { $eq: null }, assignedManagerRequest: { $eq: null }, ...filter };
         }
         if (req.body.location) {
-            filter = {location:req.body.location,...filter};
+            filter = { location: req.body.location, ...filter };
         }
-        
+
         if (req.user.TenantId) {
-            filter = {TenantId:req.user.TenantId,...filter};
+            filter = { TenantId: req.user.TenantId, ...filter };
         }
         Student.countDocuments(filter, (err, countstudent) => {
             resolve(countstudent);
@@ -109,6 +109,13 @@ const getStatus = (req, statudid) => {
                 filter = { assignedManager: req.user._id, ...filter };
             } else if (req.user.role == 'Receptionist') {
                 filter = { assignedManager: { $eq: null }, assignedManagerRequest: { $eq: null }, ...filter };
+            }
+            if (req.body.location) {
+                filter = { location: req.body.location, ...filter };
+            }
+
+            if (req.user.TenantId) {
+                filter = { TenantId: req.user.TenantId, ...filter };
             }
             Student.countDocuments(filter, (err, countstudent) => {
                 resolve(countstudent);
@@ -145,8 +152,15 @@ const getStudentOverMonth = async (req) => {
                     $gte: lebel.startOfMonth.toDate(),
                     $lte: lebel.endOfMonth.toDate()
                 },
-                status: StatuId
+                status: StatuId,
             };
+            if (req.body.location) {
+                filter = { location: req.body.location, ...filter };
+            }
+
+            if (req.user.TenantId) {
+                filter = { TenantId: req.user.TenantId, ...filter };
+            }
             let count = 0;
             await (new Promise((resolve, reject) => {
                 Student.countDocuments(filter, (err, countstudent) => {
@@ -180,10 +194,18 @@ const getStudentOverMonth = async (req) => {
 
 const getManagerOverMonth = async (req) => {
     let studentmonths = [];
-    let managers = await userModel.find({
-        $or: [{ role: 'Admin' }, { role: 'Manager' }],
-        is_active: true
-    }).lean();
+    let filtermng = {
+        role: 'Manager',
+        is_active: true,
+    };
+    if (req.body.location) {
+        filtermng = { location: req.body.location, ...filtermng };
+    }
+
+    if (req.user.TenantId) {
+        filtermng = { TenantId: req.user.TenantId, ...filtermng };
+    }
+    let managers = await userModel.find(filtermng).lean();
     let labels = [];
     for (let i = 7; i >= 0; i--) {
         const startOfMonth = moment().subtract(i, 'months').startOf('month').startOf('day');
@@ -207,8 +229,15 @@ const getManagerOverMonth = async (req) => {
                     $gte: label.startOfMonth.toDate(),
                     $lte: label.endOfMonth.toDate()
                 },
-                assignedManager: ManagerId
+                assignedManager: ManagerId,
             };
+            if (req.body.location) {
+                filter = { location: req.body.location, ...filter };
+            }
+
+            if (req.user.TenantId) {
+                filter = { TenantId: req.user.TenantId, ...filter };
+            }
             let count = 0;
             await (new Promise((resolve, reject) => {
                 Student.countDocuments(filter, (err, countstudent) => {
@@ -217,7 +246,7 @@ const getManagerOverMonth = async (req) => {
             })).then((returncount) => { count = returncount })
             monthsStatusData.push(count);
         }
-        
+
         studentmonths.push({
             label: StatusName,
             data: monthsStatusData,
@@ -237,9 +266,9 @@ function getRandomColor() {
     var letters = '0123456789ABCDEF';
     var color = '#';
     for (var i = 0; i < 6; i++) {
-      color += letters[Math.floor(Math.random() * 16)];
+        color += letters[Math.floor(Math.random() * 16)];
     }
     return color;
-  }
+}
 
 module.exports = { getdashboardDetails, admindashboard }

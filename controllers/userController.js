@@ -10,7 +10,7 @@ const tenantModel = require('../models/tenantModel')
 //@route POST api/user
 //@access Public
 const registerUser = asyncHandler(async (req, res) => {
-    const { name, email, password,TenantId, role, phoneNumber, is_active,location } = req.body
+    const { name, email, password, TenantId, role, phoneNumber, is_active, location } = req.body
 
     if (!name || !email || !password || !role) {
         res.status(400)
@@ -45,7 +45,7 @@ const registerUser = asyncHandler(async (req, res) => {
             _id: user.id,
             name: user.name,
             email: user.email,
-            TenantId:user.TenantId,
+            TenantId: user.TenantId,
             location: user.location,
             role: user.role,
             phoneNumber: phoneNumber,
@@ -101,7 +101,7 @@ const updateUserProfile = asyncHandler(async (req, res) => {
 
 
 const updateUser = asyncHandler(async (req, res) => {
-    const { name, id, role, phoneNumber, email, is_active,location } = req.body
+    const { name, id, role, phoneNumber, email, is_active, location } = req.body
 
     if (!name || !role) {
         res.status(400)
@@ -124,7 +124,7 @@ const updateUser = asyncHandler(async (req, res) => {
         role: role,
         email: email,
         phoneNumber: phoneNumber,
-        location:location,
+        location: location,
         is_active: is_active
     });
     user = await User.findOne({ _id: id });
@@ -231,7 +231,7 @@ const forgotPassword = asyncHandler(async (req, res) => {
 //@route POST api/users/login
 //@access Public
 const loginUser = asyncHandler(async (req, res) => {
-    const { email, password, TenantId ,location} = req.body
+    const { email, password, TenantId, location } = req.body
 
     const tenant = await tenantModel.findById(TenantId);
     if (tenant) {
@@ -245,7 +245,7 @@ const loginUser = asyncHandler(async (req, res) => {
 
     }
 
-    const user = await User.findOne({ TenantId: TenantId, email: email,location:location, is_active: true })
+    const user = await User.findOne({ TenantId: TenantId, email: email, location: location, is_active: true })
     if (!user) {
         res.status(200)
         throw new Error("User Not Found!")
@@ -273,7 +273,7 @@ const loginUser = asyncHandler(async (req, res) => {
 //@route POST api/users/me
 //@access Private
 const getUserById = asyncHandler(async (req, res) => {
-    const { _id, name, email, role,location, is_active, phoneNumber } = await User.findById(req.params.id)
+    const { _id, name, email, role, location, is_active, phoneNumber } = await User.findById(req.params.id)
 
     res.status(200).json({
         id: _id,
@@ -293,15 +293,15 @@ const getManager = asyncHandler(async (req, res) => {
     try {
         let filter = {};
         if (req.user.role == 'Admin') {
-            filter = {role: new RegExp("manager", 'i')}
+            filter = { role: new RegExp("manager", 'i') }
         }
-        else if(req.user.role == 'Manager'){
-            filter = {role: new RegExp("manager", 'i'),TenantId:req.body.TenantId,location:req.body.location,...filter};
+        else if (req.user.role == 'Manager') {
+            filter = { role: new RegExp("manager", 'i'), TenantId: req.body.TenantId, location: req.body.location, ...filter };
         }
-        else if(req.user.role == 'Receptionist'){
-            filter = {role: new RegExp("manager", 'i'),TenantId:req.body.TenantId,location:req.body.location,...filter};
+        else if (req.user.role == 'Receptionist') {
+            filter = { role: new RegExp("manager", 'i'), TenantId: req.body.TenantId, location: req.body.location, ...filter };
         }
-        const user = await User.find(filter, { _id: 1, email: 1, name: 1, role: 1, phoneNumber: 1,TenantId:1,location:1 });
+        const user = await User.find(filter, { _id: 1, email: 1, name: 1, role: 1, phoneNumber: 1, TenantId: 1, location: 1 });
         res.status(200).json(user).end();
     } catch (err) {
         return res.status(400).json({
@@ -327,7 +327,7 @@ const getAllUser = asyncHandler(async (req, res) => {
         if (req.body.TenantId) {
             fillter.TenantId = req.body.TenantId;
         }
-        const user = await User.find(fillter, { _id: 1, email: 1, name: 1, role: 1, is_active: 1, phoneNumber: 1,location:1 ,TenantId:1}).sort({ 'is_active': -1, name: 1 });
+        const user = await User.find(fillter, { _id: 1, email: 1, name: 1, role: 1, is_active: 1, phoneNumber: 1, location: 1, TenantId: 1 }).sort({ 'is_active': -1, name: 1 });
         res.status(200).json(user).end();
     } catch (err) {
         return res.status(400).json({
