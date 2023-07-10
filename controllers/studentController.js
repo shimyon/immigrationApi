@@ -75,7 +75,6 @@ const addStudent = asyncHandler(async (req, res) => {
             mobileNumber: req.body.mobileNumber,
             email: req.body.email,
             nationality: req.body.nationality,
-            citizen: req.body.citizen,
             visaApplyCountry: req.body.visaApplyCountry,
             location: req.body.location,
             TenantId: req.body.TenantId,
@@ -94,9 +93,8 @@ const addStudent = asyncHandler(async (req, res) => {
 
 
         if (savedStudent) {
-            let resuser = await User.find({ role: 'Receptionist', location: req.body.location, TenantId: req.body.TenantId }).lean();
-            console.log(fillter)
-            console.log(resuser)
+            let filter ={ role: 'Receptionist', location: req.body.location, TenantId: req.body.TenantId }
+            let resuser = await User.find(filter).lean();
             let date = new Date();
             let insertdata = resuser.map(f => ({
                 description: `New student(${req.body.studentName}) entry has been created`,
@@ -161,7 +159,6 @@ const saveEditStudent = asyncHandler(async (req, res, imageName) => {
             mobileNumber: req.body.mobileNumber,
             email: req.body.email,
             nationality: req.body.nationality,
-            citizen: req.body.citizen,
             photo: req.body.imageName.replace(",", ""),
             spouseName: req.body.spouseName,
             spouseRelation: req.body.spouseRelation,
@@ -541,7 +538,6 @@ const editPirsonalInfo = asyncHandler(async (req, res) => {
             mobileNumber: req.body.mobileNumber,
             email: req.body.email,
             nationality: req.body.nationality,
-            citizen: req.body.citizen,
             visaApplyCountry: req.body.visaApplyCountry,
             // photo: req.body.imageName.replace(",", ""),
             spouseName: req.body.spouseName,

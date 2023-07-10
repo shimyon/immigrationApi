@@ -40,9 +40,6 @@ const studentSchema = mongoose.Schema(
         nationality: {
             type: String
         },
-        citizen: {
-            type: String
-        },
         photo: {
             type: String
         },
