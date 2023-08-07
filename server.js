@@ -30,6 +30,7 @@ app.use('/api/dashboard', require('./routes/dashboardRoute'));
 app.use('/api/notification', require('./routes/notificationRoute'));
 app.use('/api/location', require('./routes/locationRoute'));
 app.use('/api/tenant', require('./routes/tenantRoutes'));
+app.use('/api/VisaApplyCountry', require('./routes/VisaApplyCountryRoutes'));
 
 app.use(errorHandler)
 
