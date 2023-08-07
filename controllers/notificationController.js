@@ -89,9 +89,11 @@ const getAllNotification = asyncHandler(async (req, res) => {
 const getAllNotificationByUId = asyncHandler(async (req, res) => {
     try {
         // const userExists = await User.findOne({ _id: id });
+        let { skip, per_page } = req.body;
 
-        const notification = await notificationModel.find({ userId: req.body.userId }).sort({ createdAt: -1 });
-
+        
+        const notification = await notificationModel.find({ userId: req.body.userId,skip: skip, per_page: per_page  }).sort({ createdAt: -1 });
+       
         res.status(200).json({
             success: true,
             msg: "",

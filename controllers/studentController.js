@@ -690,6 +690,13 @@ const addEducation = asyncHandler(async (req, res) => {
 const addLanguage = asyncHandler(async (req, res) => {
     try {
         const studentId = req.params.id;
+         var exiLanguage = await LanguageModal.findOne({ languageName: req.body.languageName });
+        if (exiLanguage) {
+            return res.status(400).json({
+                success: false,
+                message: 'Language already exist'
+            });
+        }
         const existLanguage = await LanguageModal.create({
             languageName: req.body.languageName,
             speak: req.body.speak,
