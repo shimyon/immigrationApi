@@ -68,7 +68,7 @@ const editVisaApplyCountry = asyncHandler(async (req, res) => {
 
 const getAllVisaApplyCountry = asyncHandler(async (req, res) => {
     try {
-        const VisaCountry = await VisaApplyCountry.find();
+        const VisaCountry = await VisaApplyCountry.find({ TenantId: req.params.id });
 
         res.status(200).json(VisaCountry).end();
     } catch (err) {
@@ -80,7 +80,6 @@ const getAllVisaApplyCountry = asyncHandler(async (req, res) => {
 
     }
 })
-
 const getVisaApplyCountryById = asyncHandler(async (req, res) => {
     try {
         const VisaCountry = await VisaApplyCountry.findOne({ _id: req.params.id });
