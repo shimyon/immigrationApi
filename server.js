@@ -3,24 +3,44 @@ const colors = require('colors')
 const dotenv = require('dotenv').config()
 const bodyParser = require('body-parser')
 const { errorHandler } = require('./middleware/errorMiddleware')
-const connectDB = require('./config/db')
 const port = process.env.port || 5000
+const mongoose = require('mongoose');
 var cors = require('cors');
-var cron = require('node-cron');
-
 const path = require('path')
-const swaggerUi = require('swagger-ui-express')
-swaggerDocument = require('./swagger.json');
-connectDB()
+const loadCronJob = require('./cron-job')
+
+let databasestatus = "In-Progress";
 
 const app = express()
 
 app.use(cors({ origin: '*' }));
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
-
 app.options("*", cors());
 
+const connectDB = async () => {
+    try {
+        await mongoose.connect(process.env.MONGO_URI).then(() => {
+            databasestatus = "DB connected";
+
+            //Load Cron Jobs
+            loadCronJob();
+        }).catch((err) => {
+            databasestatus = err;
+        });
+    } catch (error) {
+        databasestatus = error;
+    }
+}
+connectDB();
+
+app.get("/api", (req, res) => {
+    res.json({
+        version: "v1.4-7.13.23.",
+        dbstatus: databasestatus,
+        rand: new Date()
+    });
+});
 app.use('/static', express.static("public/uploads"));
 app.use('/api/users', require('./routes/userRoutes'));
 app.use('/api/student', require('./routes/studentRoutes'));
@@ -33,10 +53,4 @@ app.use('/api/tenant', require('./routes/tenantRoutes'));
 app.use('/api/VisaApplyCountry', require('./routes/VisaApplyCountryRoutes'));
 
 app.use(errorHandler)
-
-
-cron.schedule('1 0-23 * * *', () => {
-    console.log('running a task every hours - ' + new Date());
-});
-
 app.listen(port, () => console.log(`Listening at port ${port}`))
