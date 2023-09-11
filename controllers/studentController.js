@@ -88,7 +88,6 @@ const addStudent = asyncHandler(async (req, res) => {
             education: education,
             workExperience: workExperience,
             language: language,
-            is_Complate:"No",
             status: req.body.status,
         });
 

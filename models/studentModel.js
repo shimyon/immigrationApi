@@ -97,7 +97,8 @@ const studentSchema = mongoose.Schema(
             ref: 'Tenant'
         },
         is_Complate: {
-            type: String,
+            type: Boolean,
+            default: false
         },
         updatedBy: {
             type: mongoose.Schema.Types.ObjectId,
