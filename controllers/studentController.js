@@ -88,6 +88,7 @@ const addStudent = asyncHandler(async (req, res) => {
             education: education,
             workExperience: workExperience,
             language: language,
+            is_Complate:"No",
             status: req.body.status,
         });
 
@@ -220,6 +221,9 @@ const getStudents = asyncHandler(async (req, res) => {
         if (req.user.TenantId) {
             filter = { TenantId: req.user.TenantId, ...filter };
         }
+        if (req.body.is_Complate) {
+            filter = { is_Complate: req.body.is_Complate, ...filter };
+        }
         const student = await Student.find(filter).sort({ updatedAt: -1 })
             .populate("education")
             .populate("workExperience")
@@ -248,6 +252,11 @@ const getallStudentlist = asyncHandler(async (req, res) => {
         if (req.user.TenantId) {
             filter = { TenantId: req.user.TenantId, ...filter };
         }
+
+        if (req.body.is_Complate) {
+            filter = { is_Complate: req.body.is_Complate, ...filter };
+        }
+
         const student = await Student.find(filter).sort({ updatedAt: -1 })
             .populate("education")
             .populate("workExperience")
@@ -307,7 +316,29 @@ const updateStatus = asyncHandler(async (req, res) => {
 
     }
 })
+const updateComplate = asyncHandler(async (req, res) => {
+    try {
+        const student = await Student.findByIdAndUpdate(req.params.id, {
+            is_Complate: req.body.is_Complate,
+        });
+        if (student) {
+            res.status(200).json({
+                message: "Student saved successfully."
+            }).end()
+        }
+        else {
+            res.status(400)
+            throw new Error("Invalid student data!")
+        }
+    } catch (err) {
+        return res.status(400).json({
+            success: false,
+            msg: "Error in updating manager. " + err.message,
+            data: null,
+        });
 
+    }
+})
 const assignedManager = asyncHandler(async (req, res) => {
     try {
         const student = await Student.findByIdAndUpdate(req.body.studentId, {
@@ -928,5 +959,6 @@ module.exports = {
     deleteStatusById,
     getStudentPending,
     cancelManagerRequest,
-    acceptManagerRequest
+    acceptManagerRequest,
+    updateComplate
 }

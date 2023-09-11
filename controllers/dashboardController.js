@@ -76,6 +76,11 @@ const getStudentCount = (req) => {
         if (req.user.TenantId) {
             filter = { TenantId: req.user.TenantId, ...filter };
         }
+        
+        if (req.body.is_Complate) {
+            filter = { is_Complate: req.body.is_Complate, ...filter };
+        }
+
         Student.countDocuments(filter, (err, countstudent) => {
             resolve(countstudent);
         })
@@ -117,6 +122,9 @@ const getStatus = (req, statudid) => {
             if (req.user.TenantId) {
                 filter = { TenantId: req.user.TenantId, ...filter };
             }
+                if(req.body.is_Complate){
+                filter = { is_Complate: req.body.is_Complate, ...filter };
+                }
             Student.countDocuments(filter, (err, countstudent) => {
                 resolve(countstudent);
             })

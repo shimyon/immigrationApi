@@ -10,7 +10,6 @@ const studentSchema = mongoose.Schema(
         name: {
             type: String,
             required: [true, 'Please add name'],
-           
         },
         address: {
             type: String,
@@ -96,7 +95,10 @@ const studentSchema = mongoose.Schema(
         TenantId: {
             type: mongoose.Schema.Types.ObjectId,
             ref: 'Tenant'
-          },
+        },
+        is_Complate: {
+            type: String,
+        },
         updatedBy: {
             type: mongoose.Schema.Types.ObjectId,
             ref: 'User'

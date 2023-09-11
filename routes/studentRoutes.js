@@ -5,7 +5,7 @@ const router = express.Router();
 const { uploadFile } = require('../middleware/uploadFileMiddleware');
 
 
-const { addStudent, getStudentById, getStudents,getallStudentlist, assignedManager, createStatus, editStatus, getAllStatus, getStatusById, changeStatus, editStudent,updateStatus,editPirsonalInfo,editEducation,addEducation,addLanguage ,editlanguage,addWorkExperiance,editWorkExperiance,deleteWorkExperiance,deleteLanguage,deleteEducation,getallEducation, getStudentEducation, getStudentworkExperience, getStudentlanguages,MobileVerify,EmailVerify, deleteStatusById, getStudentPending, cancelManagerRequest, acceptManagerRequest} = require('../controllers/studentController')
+const { addStudent, getStudentById, getStudents,updateComplate,getallStudentlist, assignedManager, createStatus, editStatus, getAllStatus, getStatusById, changeStatus, editStudent,updateStatus,editPirsonalInfo,editEducation,addEducation,addLanguage ,editlanguage,addWorkExperiance,editWorkExperiance,deleteWorkExperiance,deleteLanguage,deleteEducation,getallEducation, getStudentEducation, getStudentworkExperience, getStudentlanguages,MobileVerify,EmailVerify, deleteStatusById, getStudentPending, cancelManagerRequest, acceptManagerRequest} = require('../controllers/studentController')
 const { protect } = require('../middleware/authMiddleware')
 
 
@@ -13,6 +13,7 @@ router.post('/save', uploadFile.single("file"), addStudent);
 router.post('/edit', protect, editStudent)
 router.post('/assignedManager', protect, assignedManager)
 router.post('/updateStatus', protect, updateStatus)
+router.post('/updateComplate/:id', protect, updateComplate)
 router.post('/get', protect, getStudents)
 router.post('/getallstudent', protect, getallStudentlist)
 router.post('/getPending', protect, getStudentPending)
