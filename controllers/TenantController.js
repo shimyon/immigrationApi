@@ -1,6 +1,7 @@
 const asyncHandler = require('express-async-handler')
 const { JsonResult } = require("../utility/jsonResult");
 const tenantModel = require("../models/tenantModel");
+const locationModel = require("../models/locationModel");
 
 const tenantadd = asyncHandler(async (req, res) => {
     const tenantExists = await tenantModel.findOne({ name: req.body.name })
@@ -11,10 +12,19 @@ const tenantadd = asyncHandler(async (req, res) => {
             data: "",
         }).end();
     }
+    
     const tenant = await tenantModel.create({
         name: req.body.name,
         logo: req.file?.filename,
     })
+    
+    const location = await locationModel.create({
+        name: 'Default',
+        TenantId: tenant.id,
+        is_active: true,
+    })
+          
+
     if (tenant) {
         res.status(201).json({
             success: true,
@@ -42,14 +52,14 @@ const tenantcheck = asyncHandler(async (req, res) => {
             logo: tenantExists.logo,
         }).end();
     }
-    else {
+    else 
         res.status(400).json({
             success: false,
             msg: "Invalid Tenant Name!",
             data: "",
         }).end();
     }
-})
+)
 const tenantById = asyncHandler(async (req, res) => {
     try {
         const returnval = await tenantModel.findById(req.params.id).lean();
