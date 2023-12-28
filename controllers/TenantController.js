@@ -2,6 +2,8 @@ const asyncHandler = require('express-async-handler')
 const { JsonResult } = require("../utility/jsonResult");
 const tenantModel = require("../models/tenantModel");
 const locationModel = require("../models/locationModel");
+const useraddModel = require("../models/userModel");
+const bcrypt = require('bcryptjs')
 
 const tenantadd = asyncHandler(async (req, res) => {
     const tenantExists = await tenantModel.findOne({ name: req.body.name })
@@ -22,6 +24,21 @@ const tenantadd = asyncHandler(async (req, res) => {
         name: 'Default',
         TenantId: tenant.id,
         is_active: true,
+    })
+
+    const salt = await bcrypt.genSalt(10)
+    const hashedPassword = await bcrypt.hash('12345678', salt)
+
+
+    const useradd = await useraddModel.create({
+        TenantId: tenant.id,
+        location:  location.id,
+        name:  req.body.name,
+        email: req.body.email,
+        phoneNumber: '11111111',
+        password: hashedPassword,
+        role: 'Admin',
+        is_active: true, 
     })
           
 
