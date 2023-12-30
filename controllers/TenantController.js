@@ -3,7 +3,8 @@ const { JsonResult } = require("../utility/jsonResult");
 const tenantModel = require("../models/tenantModel");
 const locationModel = require("../models/locationModel");
 const useraddModel = require("../models/userModel");
-const bcrypt = require('bcryptjs')
+const bcrypt = require('bcryptjs');
+const { sendMail } = require('../middleware/sendMail');
 
 const tenantadd = asyncHandler(async (req, res) => {
     const tenantExists = await tenantModel.findOne({ name: req.body.name })
@@ -14,12 +15,12 @@ const tenantadd = asyncHandler(async (req, res) => {
             data: "",
         }).end();
     }
-    
+
     const tenant = await tenantModel.create({
         name: req.body.name,
         logo: req.file?.filename,
     })
-    
+
     const location = await locationModel.create({
         name: 'Default',
         TenantId: tenant.id,
@@ -32,15 +33,36 @@ const tenantadd = asyncHandler(async (req, res) => {
 
     const useradd = await useraddModel.create({
         TenantId: tenant.id,
-        location:  location.id,
-        name:  req.body.name,
+        location: location.id,
+        name: req.body.name,
         email: req.body.email,
-        phoneNumber: '11111111',
+        phoneNumber: '1111111111',
         password: hashedPassword,
         role: 'Admin',
-        is_active: true, 
+        is_active: true,
     })
-          
+    let html = `
+    Dear Customer,
+
+Welcome to Emoiss! We are thrilled to have you on board. As a valued member of our community, you now have access to a world of Immigration Portal at your fingertips.
+
+Your Account Information:
+
+User ID: ${req.body.email}
+Password: 12345678
+For security reasons, we recommend changing your password as soon as you log in. 
+
+If you have any questions or encounter any issues during the login process, our support team is here to help. You can reach them at admin@emoiss.in or by replying to this email.
+
+Thank you for choosing Emoiss. We look forward to serving you and ensuring your experience with us is nothing short of exceptional.
+
+Best regards,
+Team Emoiss
+    `
+
+    if (useradd) {
+        sendMail(req.body.email, 'Welcome to Emoiss! Your Account Information Inside.', html)
+    }
 
     if (tenant) {
         res.status(201).json({
@@ -69,13 +91,13 @@ const tenantcheck = asyncHandler(async (req, res) => {
             logo: tenantExists.logo,
         }).end();
     }
-    else 
+    else
         res.status(400).json({
             success: false,
             msg: "Invalid Tenant Name!",
             data: "",
         }).end();
-    }
+}
 )
 const tenantById = asyncHandler(async (req, res) => {
     try {
