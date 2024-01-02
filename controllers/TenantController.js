@@ -41,24 +41,8 @@ const tenantadd = asyncHandler(async (req, res) => {
         role: 'Admin',
         is_active: true,
     })
-    let html = `
-    Dear Customer,
-
-Welcome to Emoiss! We are thrilled to have you on board. As a valued member of our community, you now have access to a world of Immigration Portal at your fingertips.
-
-Your Account Information:
-
-User ID: ${req.body.email}
-Password: 12345678
-For security reasons, we recommend changing your password as soon as you log in. 
-
-If you have any questions or encounter any issues during the login process, our support team is here to help. You can reach them at admin@emoiss.in or by replying to this email.
-
-Thank you for choosing Emoiss. We look forward to serving you and ensuring your experience with us is nothing short of exceptional.
-
-Best regards,
-Team Emoiss
-    `
+    let html =
+    `<html>Dear Customer,<br/><br/>Welcome to Emoiss! We are thrilled to have you on board. As a valued member of our community, you now have access to a world of Immigration Portal at your fingertips.<br/><br/>Your Account Information:<br/><br/><b>User ID:</b> ${req.body.email}<br/><b>Password:</b> 12345678<br/>For security reasons, we recommend changing your password as soon as you log in.<br/><br/>If you have any questions or encounter any issues during the login process, our support team is here to help. You can reach them at <b>admin@emoiss.in</b> or by replying to this email.<br/><br/>Thank you for choosing Emoiss. We look forward to serving you and ensuring your experience with us is nothing short of exceptional.<br/><br/>Best regards,<br/><b>Team Emoiss</b></html>`;
 
     if (useradd) {
         sendMail(req.body.email, 'Welcome to Emoiss! Your Account Information Inside.', html)
